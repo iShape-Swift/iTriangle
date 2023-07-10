@@ -8,12 +8,11 @@
 import iShape
 
 public struct FlipShape {
-    
-    @usableFromInline
-    let paths: [FixPath]
+
+    public let paths: [FixPath]
     
     @inlinable
-    init(paths: [FixPath]) {
+    public init(paths: [FixPath]) {
         self.paths = paths
     }
 }
