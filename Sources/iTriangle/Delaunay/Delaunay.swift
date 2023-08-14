@@ -398,4 +398,17 @@ public struct Delaunay {
         return result
     }
     
+    public func trianglesIndices(shifted: Int) -> [Int] {
+        var result = Array<Int>(repeating: -1, count: 3 * triangles.count)
+        var j = 0
+        for triangle in triangles {
+            result[j] = triangle.vertices.a.index + shifted
+            result[j + 1] = triangle.vertices.b.index + shifted
+            result[j + 2] = triangle.vertices.c.index + shifted
+            j += 3
+        }
+        
+        return result
+    }
+    
 }
