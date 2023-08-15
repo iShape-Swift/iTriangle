@@ -426,7 +426,7 @@ public struct Delaunay {
 
             return isPass
         } else {
-            let shift = 1 + Int64.safeBitCount - n
+            let shift = 1 + n - Int64.safeBitCount
 
             let e = ((l10 * l30) >> shift) * ((l12 * l32) >> shift) >> 8
             
