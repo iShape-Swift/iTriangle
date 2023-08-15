@@ -64,6 +64,32 @@ public struct Delaunay {
         self.triangles = triangles
     }
     
+    public var trianglesIndices: [Int] {
+        var result = Array<Int>(repeating: -1, count: 3 * triangles.count)
+        var j = 0
+        for triangle in triangles {
+            result[j] = triangle.vertices.a.index
+            result[j + 1] = triangle.vertices.b.index
+            result[j + 2] = triangle.vertices.c.index
+            j += 3
+        }
+        
+        return result
+    }
+    
+    public func trianglesIndices(shifted: Int) -> [Int] {
+        var result = Array<Int>(repeating: -1, count: 3 * triangles.count)
+        var j = 0
+        for triangle in triangles {
+            result[j] = triangle.vertices.a.index + shifted
+            result[j + 1] = triangle.vertices.b.index + shifted
+            result[j + 2] = triangle.vertices.c.index + shifted
+            j += 3
+        }
+        
+        return result
+    }
+    
     mutating func build() {
         triangles.withUnsafeMutableBufferPointer { pointer in
             let count = pointer.count
@@ -246,9 +272,9 @@ public struct Delaunay {
             c = abc.vertices.b
         }
         
-        let isPrefect = Delaunay.isDelaunay(p0: p.point, p1: c.point, p2: a.point, p3: b.point)
+        let isPass = Delaunay.condition(p0: p.point, p1: c.point, p2: a.point, p3: b.point)
 
-        if isPrefect {
+        if isPass {
             return false
         } else {
             
@@ -334,81 +360,96 @@ public struct Delaunay {
         }
     }
 
-    static func isDelaunay(p0: FixVec, p1: FixVec, p2: FixVec, p3: FixVec) -> Bool {
-
-        let x01 = p0.x - p1.x
-        let x03 = p0.x - p3.x
-        let x12 = p1.x - p2.x
-        let x32 = p3.x - p2.x
+    
+    // if p0 is inside circumscribe circle of p1, p2, p3 return false
+    // if p0 is inside circumscribe A + B > 180
+    // if not pass Delaunay condition we must swap triangles
+    // it's a weak Delaunay condition so
+    static func condition(p0: FixVec, p1: FixVec, p2: FixVec, p3: FixVec) -> Bool {
+        // p1, p2, p3 points of current triangle
+        // p0 is a test point
+        // p1 and p3 common points of triangle p1, p2, p3 and p1, p0, p2
+        // alpha (A) is an angle of p1, p0, p3
+        // beta (B) is an angle of p1, p2, p3
         
-        let y01 = p0.y - p1.y
-        let y03 = p0.y - p3.y
-        let y12 = p1.y - p2.y
-        let y23 = p2.y - p3.y
+        let v10 = p1 - p0
+        let v30 = p3 - p0
         
-        let cosA = x01 * x03 + y01 * y03
-        let cosB = x12 * x32 - y12 * y23
+        let v12 = p1 - p2
+        let v32 = p3 - p2
+        
+        let cosA = v10.unsafeDotProduct(v30)
+        let cosB = v12.unsafeDotProduct(v32)
         
         if cosA < 0 && cosB < 0 {
+            // A > 90 and B > 90
+            // A + B > 180
             return false
         }
-        
+
         if cosA >= 0 && cosB >= 0 {
+            // A <= 90 and B <= 90
+            // A + B <= 180
             return true
         }
         
-        // we can not just compare
-        // sinA * cosB + cosA * sinB ? 0
-        // cause we need weak Delaunay condition
-        
-        let sinA = x01 * y03 - x03 * y01
-        let sinB = x12 * y23 + x32 * y12
+        // calculate sin(A + B) must be >= 0 to pass
+        // sin(A + B) = sinA * cosB + cosA * sinB
 
-        let sl01 = x01 * x01 + y01 * y01
-        let sl03 = x03 * x03 + y03 * y03
-        let sl12 = x12 * x12 + y12 * y12
-        let sl23 = x32 * x32 + y23 * y23
-        
-        // TODO use fix float
-        
-        let max0 = Double(sl01 > sl03 ? sl01 : sl03)
-        let max1 = Double(sl12 > sl23 ? sl12 : sl23)
-        
-        
-        let dSinA = Double(sinA)
-        let dCosA = Double(cosA)
-        let dSinB = Double(sinB)
-        let dCosB = Double(cosB)
+        // use weak condition so angles 180..<185 is ok
+        // so sin(A + B) > -eps where eps is a small value
+        let l10 = v10.approximateLength
+        let l30 = v30.approximateLength
 
-        let sinAB = (dSinA * dCosB + dCosA * dSinB) / (max0 * max1)
+        let l12 = v32.approximateLength
+        let l32 = v32.approximateLength
 
-        return sinAB < 0.001
-    }
+        let sinA = abs(v10.unsafeCrossProduct(v30)) // A <= 180
+        let sinB = abs(v12.unsafeCrossProduct(v32)) // B <= 180
 
-    public var trianglesIndices: [Int] {
-        var result = Array<Int>(repeating: -1, count: 3 * triangles.count)
-        var j = 0
-        for triangle in triangles {
-            result[j] = triangle.vertices.a.index
-            result[j + 1] = triangle.vertices.b.index
-            result[j + 2] = triangle.vertices.c.index
-            j += 3
+        // possible length after multiply
+        let n0 = Int64.bitWidth - abs(cosA).leadingZeroBitCount
+        let n1 = Int64.bitWidth - abs(cosB).leadingZeroBitCount
+        let n2 = Int64.bitWidth - sinB.leadingZeroBitCount
+        let n3 = Int64.bitWidth - sinA.leadingZeroBitCount
+        
+        let n = max(max(n0, n1), max(n2, n3))
+        
+        if n < Int64.safeBitCount {
+            // we can safely multiply and do not get overflow
+        
+            let e = l10 * l30 * l12 * l32 >> 8
+            
+            let sinAB = sinA * cosB + cosA * sinB
+            
+            let isPass = sinAB >= -e
+
+            return isPass
+        } else {
+            let shift = 1 + Int64.safeBitCount - n
+
+            let e = ((l10 * l30) >> shift) * ((l12 * l32) >> shift) >> 8
+            
+            let m0 = (sinA >> shift) * (cosB >> shift)
+            let m1 = (sinB >> shift) * (cosA >> shift)
+
+            let sinAB = m0 + m1
+            
+            let isPass = sinAB >= -e
+
+            return isPass
         }
-        
-        return result
     }
+}
+
+private extension Int64 {
+    static let safeBitCount = 31
+}
+
+private extension FixVec {
     
-    public func trianglesIndices(shifted: Int) -> [Int] {
-        var result = Array<Int>(repeating: -1, count: 3 * triangles.count)
-        var j = 0
-        for triangle in triangles {
-            result[j] = triangle.vertices.a.index + shifted
-            result[j + 1] = triangle.vertices.b.index + shifted
-            result[j + 2] = triangle.vertices.c.index + shifted
-            j += 3
-        }
-        
-        return result
+    var approximateLength: Int64 {
+        (abs(x) + abs(y)) >> 1
     }
     
 }
