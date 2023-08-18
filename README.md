@@ -119,11 +119,11 @@ let package = Package(
 Or add it directly through .xcodeproj
 
 <p align="center">
-<img src="https://github.com/iShape-Swift/iTriangle/blob/master/Readme/instruction_1.png" width="600"/>
+<img src="https://github.com/iShape-Swift/iTriangle/blob/main/Reeadme/instruction_1.png" width="600"/>
 </p>
 
 In Searchbar add https://github.com/iShape-Swift/iTriangle
 
 <p align="center">
-<img src="https://github.com/iShape-Swift/iTriangle/blob/master/Readme/instruction_2.png" width="600"/>
+<img src="https://github.com/iShape-Swift/iTriangle/blob/main/Reeadme/instruction_2.png" width="600"/>
 </p>
