@@ -49,7 +49,7 @@ import iTriangle
 
 After that, represent your polygon as an array of vertices listed in a clockwise direction. Here's an example of a cheese polygon:
 <p align="center">
-<img src="https://github.com/iShape-Swift/iTriangleation/blob/master/Readme/cheese_example_0.svg" width="600"/>
+<img src="https://github.com/iShape-Swift/iTriangle/blob/main/Reeadme/cheese_example.svg" width="600"/>
 </p>
 
 ```swift
