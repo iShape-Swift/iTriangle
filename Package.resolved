@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "ifixfloat",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iShape-Swift/iFixFloat",
+      "state" : {
+        "revision" : "5defd5f729de23f193e8dc8254a63631a0bef7a1",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "ioverlay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iShape-Swift/iOverlay",
+      "state" : {
+        "revision" : "452412db0a20f2c95f15b16a82ffb19c7570e160",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "ishape",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iShape-Swift/iShape",
+      "state" : {
+        "revision" : "406cbeedf710e23fd4972f9ae44c21ed8bd1c1ea",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}
