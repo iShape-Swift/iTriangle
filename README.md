@@ -1,7 +1,7 @@
 # iTriangle
-Complex polygon triangulation, tessellation and split into convex polygons. Initialy for first triangulation it use triangulation of monotenes polygons, after it use iteration algoithm to make Delaynay triangulation. If your polygon has self-intersections or some degenerate case, they will be resolved with [iOverlay] 
- [https://github.com/iShape-Swift/iOverlay]. iTriangle use fix-float math in range -1000_000.000...1000_000.000 with a precision 0.001, but recommended range is -100_000...100_000 with a orecision of.
-
+Complex polygon triangulation, tessellation, and splitting into convex polygons. Initially, for the first triangulation, it uses monotone polygons' triangulation, and then it applies an iterative algorithm to create Delaunay triangulation. If your polygon has self-intersections or some degenerate cases, they will be resolved with [iOverlay] 
+ [https://github.com/iShape-Swift/iOverlay]. iTriangle uses fixed-float math in the range -1,000,000.000 to 1,000,000.000 with a precision of 0.001, but the recommended range is -100,000 to 100,000 with precision.
+ 
 ## Delaunay triangulation
 <p align="center">
 <img src="https://github.com/iShape-Swift/iShapeTriangulation/blob/master/Readme/star_triangle.svg" width="500"/>
@@ -24,19 +24,19 @@ Complex polygon triangulation, tessellation and split into convex polygons. Init
 
 ## Features
 
-💡 Fast O(n*log(n)) algorithm based on "Triangulation of monotone polygons"
+- Fast O(n*log(n)) algorithm based on "Triangulation of Monotone Polygons"
 
-💡 All code is written to suit "Data Oriented Design". No reference type like class, just structs.
+- All code is written in accordance with "Data-Oriented Design." No reference types like classes, just structs.
 
-💡 Supports polygons with holes, self-intersections and other degenerate cases
+- Supports polygons with holes, self-intersections, and other degenerate cases
 
-💡 Supports tesselation
+- Supports tessellation
 
-💡 Supports breaking into convex polygons
+- Supports breaking into convex polygons
 
-💡 Supports building centroid net
+- Supports building centroid nets
 
-💡 Use integer geometry for calculations
+- Utilizes integer geometry for calculations
 
 ## Basic Usage
 
@@ -47,7 +47,7 @@ import iFixFloat
 import iTriangle
 ```
 
-After that you need represent your polygon as an array of vertices listed in a clockwise direction. Let's have a look for an example of a cheese polygon.
+After that, represent your polygon as an array of vertices listed in a clockwise direction. Here's an example of a cheese polygon:
 <p align="center">
 <img src="https://github.com/iShape-Swift/iTriangleation/blob/master/Readme/cheese_example_0.svg" width="600"/>
 </p>
@@ -91,8 +91,8 @@ let triangulation = shape.triangulate()
 print("points: \(triangulation.points.map({ $0.float }))")
 print("indices: \(triangulation.indices)")
 ```
-While creating a shape you can add any count of holes. The paths you add can be self-intersected. Self-intersection will be removed during triangulation process with even-odd rule.
-As the result you will get "Triangulation" structure of int-points and indices. Don't forget to convert it back ro your preffered data float2, CGPoint etc.
+While creating a shape, you can add any number of holes. The paths you add can be self-intersecting. Self-intersections will be removed during the triangulation process using the even-odd rule.
+As a result, you will receive a "Triangulation" structure of int-points and indices; all triangles must be counted in a clockwise direction. Don't forget to convert it back to your preferred data type like float2, CGPoint, etc.
 
 
 ## Installation
@@ -116,7 +116,8 @@ let package = Package(
     ]
 )
 ```
-Or add it directly throw .xcodeproj
+Or add it directly through .xcodeproj
+
 <p align="center">
 <img src="https://github.com/iShape-Swift/iTriangle/blob/master/Readme/SwiftPackageManager_tip.png" width="600"/>
 </p>
