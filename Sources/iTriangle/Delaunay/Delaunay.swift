@@ -363,9 +363,9 @@ public struct Delaunay {
     
     // if p0 is inside circumscribe circle of p1, p2, p3 return false
     // if p0 is inside circumscribe A + B > 180
-    // if not pass Delaunay condition we must swap triangles
-    // it's a weak Delaunay condition so
+    // return true if triangle satisfied condition and do not need flip triangles
     static func condition(p0: FixVec, p1: FixVec, p2: FixVec, p3: FixVec) -> Bool {
+        // x, y of all coordinates is in range of Int32
         // p1, p2, p3 points of current triangle
         // p0 is a test point
         // p1 and p3 common points of triangle p1, p2, p3 and p1, p0, p2
@@ -393,63 +393,89 @@ public struct Delaunay {
             return true
         }
         
-        // calculate sin(A + B) must be >= 0 to pass
-        // sin(A + B) = sinA * cosB + cosA * sinB
-
-        // use weak condition so angles 180..<185 is ok
-        // so sin(A + B) > -eps where eps is a small value
-        let l10 = v10.approximateLength
-        let l30 = v30.approximateLength
-
-        let l12 = v32.approximateLength
-        let l32 = v32.approximateLength
-
         let sinA = abs(v10.unsafeCrossProduct(v30)) // A <= 180
         let sinB = abs(v12.unsafeCrossProduct(v32)) // B <= 180
+        
+        // cosA and cosB has different sign
+        
+        let isPositive_or_zero: Bool
+        if cosA < 0 {
+            // cosB >= 0
+            let sinAcosB = UInt128.multiply(UInt64(sinA), UInt64(cosB))          // positive
+            let cosAsinB = UInt128.multiply(UInt64(abs(cosA)), UInt64(sinB))     // negative
 
-        // possible length after multiply
-        let n0 = Int64.bitWidth - abs(cosA).leadingZeroBitCount
-        let n1 = Int64.bitWidth - abs(cosB).leadingZeroBitCount
-        let n2 = Int64.bitWidth - sinB.leadingZeroBitCount
-        let n3 = Int64.bitWidth - sinA.leadingZeroBitCount
-        
-        let n = max(max(n0, n1), max(n2, n3))
-        
-        if n < Int64.safeBitCount {
-            // we can safely multiply and do not get overflow
-        
-            let e = l10 * l30 * l12 * l32 >> 8
-            
-            let sinAB = sinA * cosB + cosA * sinB
-            
-            let isPass = sinAB >= -e
-
-            return isPass
+            isPositive_or_zero = sinAcosB >= cosAsinB
         } else {
-            let shift = 1 + n - Int64.safeBitCount
-
-            let e = ((l10 * l30) >> shift) * ((l12 * l32) >> shift) >> 8
+            // cosA >= 0
+            // cosB < 0
+            let sinAcosB = UInt128.multiply(UInt64(sinA), UInt64(abs(cosB)))    // negative
+            let cosAsinB = UInt128.multiply(UInt64(cosA), UInt64(sinB))         // positive
             
-            let m0 = (sinA >> shift) * (cosB >> shift)
-            let m1 = (sinB >> shift) * (cosA >> shift)
-
-            let sinAB = m0 + m1
-            
-            let isPass = sinAB >= -e
-
-            return isPass
+            isPositive_or_zero = cosAsinB >= sinAcosB
         }
-    }
-}
-
-private extension Int64 {
-    static let safeBitCount = 31
-}
-
-private extension FixVec {
-    
-    var approximateLength: Int64 {
-        (abs(x) + abs(y)) >> 1
+        
+        return isPositive_or_zero
     }
     
+#if DEBUG
+    enum DelaunayResult {
+        case a_and_b_more_90
+        case a_and_b_less_90
+        case other_path
+        case other_fail
+    }
+    
+    static func condition_debug(p0: FixVec, p1: FixVec, p2: FixVec, p3: FixVec) -> DelaunayResult {
+        // p1, p2, p3 points of current triangle
+        // p0 is a test point
+        // p1 and p3 common points of triangle p1, p2, p3 and p1, p0, p2
+        // alpha (A) is an angle of p1, p0, p3
+        // beta (B) is an angle of p1, p2, p3
+        
+        let v10 = p1 - p0
+        let v30 = p3 - p0
+        
+        let v12 = p1 - p2
+        let v32 = p3 - p2
+        
+        let cosA = v10.unsafeDotProduct(v30)
+        let cosB = v12.unsafeDotProduct(v32)
+        
+        if cosA < 0 && cosB < 0 {
+            // A > 90 and B > 90
+            // A + B > 180
+            return .a_and_b_more_90
+        }
+
+        if cosA >= 0 && cosB >= 0 {
+            // A <= 90 and B <= 90
+            // A + B <= 180
+            return .a_and_b_less_90
+        }
+        
+        let sinA = abs(v10.unsafeCrossProduct(v30)) // A <= 180
+        let sinB = abs(v12.unsafeCrossProduct(v32)) // B <= 180
+        
+        // cosA and cosB has different sign
+        
+        let isPositive_or_zero: Bool
+        if cosA < 0 {
+            // cosB >= 0
+            let sinAcosB = UInt128.multiply(UInt64(sinA), UInt64(cosB))          // positive
+            let cosAsinB = UInt128.multiply(UInt64(abs(cosA)), UInt64(sinB))     // negative
+
+            isPositive_or_zero = sinAcosB >= cosAsinB
+        } else {
+            // cosA >= 0
+            // cosB < 0
+            let sinAcosB = UInt128.multiply(UInt64(sinA), UInt64(abs(cosB)))    // negative
+            let cosAsinB = UInt128.multiply(UInt64(cosA), UInt64(sinB))         // positive
+            
+            isPositive_or_zero = cosAsinB >= sinAcosB
+        }
+        
+        return isPositive_or_zero ? .other_path : .other_fail
+    }
+    
+#endif
 }
