@@ -69,59 +69,34 @@ struct MSliceBuffer {
         
         for i in 0..<n {
             var triangle = triangles[i]
-            let a = triangle.vertices.a.index
-            let b = triangle.vertices.b.index
-            let c = triangle.vertices.c.index
             
-            var edgeIndex = self.find(a: a, b: b)
-            if edgeIndex >= 0 {
-                var edge = self.edges[edgeIndex]
-                if edge.isEmpty {
-                    edge.triangle = i
-                    edge.edge = 2
-                    self.edges[edgeIndex] = edge
-                } else {
-                    triangle.neighbors.c = edge.triangle
-                    var neighbor = triangles[edge.triangle]
-                    neighbor.neighbors[edge.edge] = i
-                    triangles[edge.triangle] = neighbor
-                    triangles[i] = triangle
+            var j0 = 1
+            var j1 = 2
+            for j2 in 0...2 {
+                let a = triangle.vertices[j1].index
+                let b = triangle.vertices[j2].index
+                let edgeIndex = self.find(a: a, b: b)
+
+                if edgeIndex >= 0 {
+                    var edge = self.edges[edgeIndex]
+
+                    if edge.isEmpty {
+                        edge.triangle = i
+                        edge.edge = j0
+                        self.edges[edgeIndex] = edge
+                    } else {
+                        triangle.neighbors[j0] = edge.triangle
+                        var neighbor = triangles[edge.triangle]
+                        neighbor.neighbors[edge.edge] = i
+                        triangles[edge.triangle] = neighbor
+                        triangles[i] = triangle
+                    }
                 }
-            }
-            
-            edgeIndex = self.find(a: a, b: c)
-            if edgeIndex >= 0 {
-                var edge = self.edges[edgeIndex]
-                if edge.isEmpty {
-                    edge.triangle = i
-                    edge.edge = 1
-                    self.edges[edgeIndex] = edge
-                } else {
-                    triangle.neighbors.b = edge.triangle
-                    var neighbor = triangles[edge.triangle]
-                    neighbor.neighbors[edge.edge] = i
-                    triangles[edge.triangle] = neighbor
-                    triangles[i] = triangle
-                }
-            }
-            
-            edgeIndex = self.find(a: b, b: c)
-            if edgeIndex >= 0 {
-                var edge = self.edges[edgeIndex]
-                if edge.isEmpty {
-                    edge.triangle = i
-                    edge.edge = 0
-                    self.edges[edgeIndex] = edge
-                } else {
-                    triangle.neighbors.a = edge.triangle
-                    var neighbor = triangles[edge.triangle]
-                    neighbor.neighbors[edge.edge] = i
-                    triangles[edge.triangle] = neighbor
-                    triangles[i] = triangle
-                }
+                
+                j0 = j1
+                j1 = j2
             }
         }
-
     }
 
     private func find(a: Int, b: Int) -> Int {
