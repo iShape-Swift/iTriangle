@@ -9,11 +9,11 @@ import iShape
 
 public extension FixShapes {
     
-    func triangulate() -> [Delaunay] {
+    func delaunay() -> [Delaunay] {
         var result = [Delaunay]()
         result.reserveCapacity(self.count)
         for shape in self {
-            if let delaunay = shape.flip.triangulate() {
+            if let delaunay = shape.flip.delaunay() {
                 result.append(delaunay)
             }
         }

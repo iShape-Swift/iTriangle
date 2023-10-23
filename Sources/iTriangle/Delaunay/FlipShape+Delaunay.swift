@@ -92,7 +92,7 @@ extension FlipShape {
         }
     }
 
-    func triangulate() -> Delaunay? {
+    func delaunay() -> Delaunay? {
         let layout = self.mLayout
         
         guard layout.status == .success else {
