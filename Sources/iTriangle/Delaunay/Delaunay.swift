@@ -65,7 +65,7 @@ public struct Delaunay {
     }
     
     public var trianglesIndices: [Int] {
-        var result = Array<Int>(repeating: -1, count: 3 * triangles.count)
+        var result = Array<Int>(repeating: 0, count: 3 * triangles.count)
         var j = 0
         for triangle in triangles {
             result[j] = triangle.vertices.a.index
@@ -78,7 +78,7 @@ public struct Delaunay {
     }
     
     public func trianglesIndices(shifted: Int) -> [Int] {
-        var result = Array<Int>(repeating: -1, count: 3 * triangles.count)
+        var result = Array<Int>(repeating: 0, count: 3 * triangles.count)
         var j = 0
         for triangle in triangles {
             result[j] = triangle.vertices.a.index + shifted
@@ -228,10 +228,11 @@ public struct Delaunay {
                         }
                     }
                 }
+                origin.removeAll()
+                
                 let temp = origin
                 origin = buffer
                 buffer = temp
-                buffer.removeAll()
             }
             
             origin.deallocate()
@@ -286,10 +287,10 @@ public struct Delaunay {
             let ac = abc.neighbors[bi]
 
             // abc -> abp
-            var abp: DTriangle
+            let abp: DTriangle
             
             // pbc -> acp
-            var acp: DTriangle
+            let acp: DTriangle
 
             if isABP_CW {
                 abp = DTriangle(
@@ -365,7 +366,7 @@ public struct Delaunay {
     // if p0 is inside circumscribe A + B > 180
     // return true if triangle satisfied condition and do not need flip triangles
     static func condition(p0: FixVec, p1: FixVec, p2: FixVec, p3: FixVec) -> Bool {
-        // x, y of all coordinates is in range of Int32
+        // x, y of all coordinates must be in range of Int32
         // p1, p2, p3 points of current triangle
         // p0 is a test point
         // p1 and p3 common points of triangle p1, p2, p3 and p1, p0, p2

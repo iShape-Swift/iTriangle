@@ -20,25 +20,25 @@ public extension FixShape {
     
     func triangulate(validate: Bool = true) -> Triangulation {
         guard validate else {
-            let result = self.flip.triangulate()
-            return Triangulation(
-                points: result.delaunay.points,
-                indices: result.delaunay.trianglesIndices
-            )
+            if let delaunay = self.flip.triangulate() {
+                return Triangulation(points: delaunay.points, indices: delaunay.trianglesIndices)
+            } else {
+                return Triangulation(points: [], indices: [])
+            }
         }
         let shapes = self.resolveSelfIntersection()
         
-        let tResults = shapes.triangulate()
+        let results = shapes.triangulate()
 
         var points = [FixVec]()
         var indices = [Int]()
         var offset = 0
 
-        for t in tResults {
-            let subIndices = t.delaunay.trianglesIndices(shifted: offset)
+        for delaunay in results {
+            let subIndices = delaunay.trianglesIndices(shifted: offset)
             indices.append(contentsOf: subIndices)
 
-            let subPoints = t.delaunay.points
+            let subPoints = delaunay.points
             points.append(contentsOf: subPoints)
 
             offset += subPoints.count
@@ -47,8 +47,8 @@ public extension FixShape {
         return Triangulation(points: points, indices: indices)
     }
     
-    func delaunay() -> Delaunay {
-        self.flip.triangulate().delaunay
+    func delaunay() -> Delaunay? {
+        self.flip.triangulate()
     }
     
 }

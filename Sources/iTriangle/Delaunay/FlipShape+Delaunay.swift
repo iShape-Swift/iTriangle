@@ -92,11 +92,11 @@ extension FlipShape {
         }
     }
 
-    func triangulate() -> TResult {
+    func triangulate() -> Delaunay? {
         let layout = self.mLayout
         
         guard layout.status == .success else {
-            return TResult(isSuccess: false, delaunay: .init(points: [], triangles: []))
+            return nil
         }
             
         let holesCount = self.paths.count - 1
@@ -125,7 +125,7 @@ extension FlipShape {
 
         delaunay.build()
         
-        return TResult(isSuccess: true, delaunay: delaunay)
+        return delaunay
     }
     
     private static func triangulate(index: Int, links: inout [MNavNode], triangleStack: inout TriangleStack) {
