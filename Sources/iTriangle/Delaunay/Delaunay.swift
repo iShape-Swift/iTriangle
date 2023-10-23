@@ -400,6 +400,7 @@ public struct Delaunay {
         
         let isPositive_or_zero: Bool
         if cosA < 0 {
+            // cosA < 0
             // cosB >= 0
             let sinAcosB = UInt128.multiply(UInt64(sinA), UInt64(cosB))          // positive
             let cosAsinB = UInt128.multiply(UInt64(abs(cosA)), UInt64(sinB))     // negative
