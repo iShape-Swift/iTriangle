@@ -116,9 +116,9 @@ extension FlipShape {
         var sliceBuffer = MSliceBuffer(vertexCount: links.count, slices: layout.sliceList)
         sliceBuffer.addConections(triangles: &triangles)
 
-        var points = [FixVec](repeating: .zero, count: layout.navNodes.count)
+        var points = [FixVec](repeating: .zero, count: vertsCount)
         for node in layout.navNodes {
-            points[node.index] = node.vert.point
+            points[node.vert.index] = node.vert.point
         }
         
         var delaunay = Delaunay(points: points, triangles: triangles)

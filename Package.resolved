@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iShape-Swift/iFixFloat",
       "state" : {
-        "revision" : "5defd5f729de23f193e8dc8254a63631a0bef7a1",
-        "version" : "1.0.0"
+        "revision" : "c4e767ba81c5b2820ac9d24b3a5a8b0178fd1bd2",
+        "version" : "1.1.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iShape-Swift/iOverlay",
       "state" : {
-        "revision" : "452412db0a20f2c95f15b16a82ffb19c7570e160",
-        "version" : "1.0.0"
+        "revision" : "ef87233d495d2d84174c43494b015bfc6bf5a548",
+        "version" : "1.0.2"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/iShape-Swift/iShape",
       "state" : {
-        "revision" : "406cbeedf710e23fd4972f9ae44c21ed8bd1c1ea",
-        "version" : "1.0.0"
+        "revision" : "3f491778dcf4892653a2fa12d7ebd1a56ec7e94b",
+        "version" : "1.0.2"
       }
     }
   ],

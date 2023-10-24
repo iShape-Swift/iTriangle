@@ -18,7 +18,7 @@ public struct Triangulation {
 
 public extension FixShape {
     
-    func triangulate(validate: Bool = true) -> Triangulation {
+    func triangulate(validate: Bool = true, minArea: Int64 = 0) -> Triangulation {
         guard validate else {
             if let delaunay = self.flip.delaunay() {
                 return Triangulation(points: delaunay.points, indices: delaunay.trianglesIndices)
@@ -26,7 +26,7 @@ public extension FixShape {
                 return Triangulation(points: [], indices: [])
             }
         }
-        let shapes = self.resolveSelfIntersection()
+        let shapes = self.resolveSelfIntersection(minArea: minArea)
         
         let results = shapes.delaunay()
 

@@ -161,10 +161,12 @@ public struct Delaunay {
                         visitIndex &+= 1
                     }
                 }
+
+                origin.removeAll()
+
                 let temp = origin
                 origin = buffer
                 buffer = temp
-                buffer.removeAll()
             }
             
             origin.deallocate()
@@ -274,7 +276,7 @@ public struct Delaunay {
         }
         
         let isPass = Delaunay.condition(p0: p.point, p1: c.point, p2: a.point, p3: b.point)
-
+        
         if isPass {
             return false
         } else {
@@ -285,13 +287,13 @@ public struct Delaunay {
             let cp = pbc.neighbor(vertex: b.index)
             let ab = abc.neighbors[ci]
             let ac = abc.neighbors[bi]
-
+            
             // abc -> abp
             let abp: DTriangle
             
             // pbc -> acp
             let acp: DTriangle
-
+            
             if isABP_CW {
                 abp = DTriangle(
                     index: abc.index,
@@ -302,7 +304,7 @@ public struct Delaunay {
                     ac: pbc.index,              // p - ap
                     ab: ab                      // b - ab
                 )
-
+                
                 acp = DTriangle(
                     index: pbc.index,
                     a: a,
@@ -322,7 +324,7 @@ public struct Delaunay {
                     ac: ab,                     // p - ab
                     ab: pbc.index               // b - ap
                 )
-
+                
                 acp = DTriangle(
                     index: pbc.index,
                     a: a,
@@ -340,19 +342,11 @@ public struct Delaunay {
             
             // ac (abc) is now edge of acp
             let acIndex = abc.neighbors[bi] // b - angle
-            if acIndex >= 0 {
-                var neighbor = triangles[acIndex]
-                neighbor.updateOpposite(oldNeighbor: abc.index, newNeighbor: acp.index)
-                triangles[acIndex] = neighbor
-            }
-
+            Self.updateNeighborIndex(index: acIndex, oldNeighbor: abc.index, newNeighbor: acp.index, triangles: triangles)
+            
             // bp (pbc) is now edge of abp
             let bpIndex = pbc.neighbor(vertex: c.index) // c - angle
-            if bpIndex >= 0 {
-                var neighbor = triangles[bpIndex]
-                neighbor.updateOpposite(oldNeighbor: pbc.index, newNeighbor: abp.index)
-                triangles[bpIndex] = neighbor
-            }
+            Self.updateNeighborIndex(index: bpIndex, oldNeighbor: pbc.index, newNeighbor: abp.index, triangles: triangles)
             
             triangles[abc.index] = abp
             triangles[pbc.index] = acp
@@ -360,6 +354,18 @@ public struct Delaunay {
             return true
         }
     }
+    
+    private static func updateNeighborIndex(index: Int, oldNeighbor: Int, newNeighbor: Int, triangles: UnsafeMutableBufferPointer<DTriangle>) {
+        guard index >= 0 else {
+            return
+        }
+        
+        var neighbor = triangles[index]
+        neighbor.updateOpposite(oldNeighbor: oldNeighbor, newNeighbor: newNeighbor)
+        triangles[index] = neighbor
+    }
+        
+    
 
     
     // if p0 is inside circumscribe circle of p1, p2, p3 return false
