@@ -21,7 +21,7 @@ public extension FixShape {
     func triangulate(validate: Bool = true, minArea: Int64 = 0) -> Triangulation {
         guard validate else {
             if let delaunay = self.flip.delaunay() {
-                return Triangulation(points: delaunay.points, indices: delaunay.trianglesIndices)
+                return delaunay.triangulation()
             } else {
                 return Triangulation(points: [], indices: [])
             }
@@ -35,16 +35,36 @@ public extension FixShape {
         var offset = 0
 
         for delaunay in results {
-            let subIndices = delaunay.trianglesIndices(shifted: offset)
-            indices.append(contentsOf: subIndices)
+            let triangulation = delaunay.triangulation(shifted: offset)
+            indices.append(contentsOf: triangulation.indices)
+            points.append(contentsOf: triangulation.points)
 
-            let subPoints = delaunay.points
-            points.append(contentsOf: subPoints)
-
-            offset += subPoints.count
+            offset += points.count
         }
 
         return Triangulation(points: points, indices: indices)
+    }
+    
+    func decomposeToConvexPolygons(validate: Bool = true, minArea: Int64 = 0) -> [ConvexPath] {
+        guard validate else {
+            if let delaunay = self.flip.delaunay() {
+                return delaunay.convexPolygons()
+            } else {
+                return []
+            }
+        }
+        let shapes = self.resolveSelfIntersection(minArea: minArea)
+        
+        let results = shapes.delaunay()
+
+        var polygons = [ConvexPath]()
+
+        for delaunay in results {
+            let subPolygons = delaunay.convexPolygons()
+            polygons.append(contentsOf: subPolygons)
+        }
+
+        return polygons
     }
     
     func delaunay() -> Delaunay? {

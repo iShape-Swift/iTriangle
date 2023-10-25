@@ -11,19 +11,9 @@ final class iTriangleTests: XCTestCase {
         let triangulation = test.shape.triangulate()
         
         XCTAssertTrue(!triangulation.indices.isEmpty)
-            
-        self.print_result(index: index, triangulation: triangulation)
         
         XCTAssertEqual(test.indices, triangulation.indices)
         XCTAssertEqual(test.points, triangulation.points)
-    }
-    
-    private func print_result(index: Int, triangulation: Triangulation) {
-        print("---- \(index) ----")
-        print("points: \(triangulation.points)")
-        print(",")
-        print("indices: \(triangulation.indices)")
-        print("--------")
     }
     
     

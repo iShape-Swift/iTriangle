@@ -55,40 +55,59 @@ private struct IntList {
 
 public struct Delaunay {
 
-    public internal (set) var points: [FixVec]
-    
     var triangles: [DTriangle]
+    var vertCount: Int
 
-    init(points: [FixVec], triangles: [DTriangle]) {
-        self.points = points
+    init(triangles: [DTriangle]) {
         self.triangles = triangles
-    }
-    
-    public var trianglesIndices: [Int] {
-        var result = Array<Int>(repeating: 0, count: 3 * triangles.count)
-        var j = 0
+        
+        var maxIndex = 0
         for triangle in triangles {
-            result[j] = triangle.vertices.a.index
-            result[j + 1] = triangle.vertices.b.index
-            result[j + 2] = triangle.vertices.c.index
-            j += 3
+            let a = triangle.vertices.a.index
+            let b = triangle.vertices.b.index
+            let c = triangle.vertices.c.index
+            
+            maxIndex = max(max(a, b), max(c, maxIndex))
         }
         
-        return result
+        vertCount = maxIndex + 1
     }
     
-    public func trianglesIndices(shifted: Int) -> [Int] {
-        var result = Array<Int>(repeating: 0, count: 3 * triangles.count)
-        var j = 0
-        for triangle in triangles {
-            result[j] = triangle.vertices.a.index + shifted
-            result[j + 1] = triangle.vertices.b.index + shifted
-            result[j + 2] = triangle.vertices.c.index + shifted
-            j += 3
+    public func triangulation(shifted: Int = 0) -> Triangulation {
+        var indices = [Int](repeating: 0, count: 3 * triangles.count)
+
+        indices.withUnsafeMutableBufferPointer { indicesPtr in
+            var j = 0
+            for triangle in triangles {
+                let a = triangle.vertices.a
+                let b = triangle.vertices.b
+                let c = triangle.vertices.c
+                
+                indicesPtr[j] = a.index + shifted
+                indicesPtr[j + 1] = b.index + shifted
+                indicesPtr[j + 2] = c.index + shifted
+                
+                j += 3
+            }
+        }
+
+        var points = [FixVec](repeating: .zero, count: self.vertCount)
+        
+        points.withUnsafeMutableBufferPointer { pointsPtr in
+            for triangle in triangles {
+                let a = triangle.vertices.a
+                let b = triangle.vertices.b
+                let c = triangle.vertices.c
+                
+                pointsPtr[a.index] = a.point
+                pointsPtr[b.index] = b.point
+                pointsPtr[c.index] = c.point
+            }
         }
         
-        return result
+        return Triangulation(points: points, indices: indices)
     }
+
     
     mutating func build() {
         triangles.withUnsafeMutableBufferPointer { pointer in

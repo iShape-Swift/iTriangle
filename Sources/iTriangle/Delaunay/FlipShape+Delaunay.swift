@@ -100,8 +100,8 @@ extension FlipShape {
         }
             
         let holesCount = self.paths.count - 1
-        let vertsCount = self.paths.reduce(0, { $0 + $1.count })
-        let totalCount = vertsCount + holesCount * 2
+        let vertCount = self.paths.reduce(0, { $0 + $1.count })
+        let totalCount = vertCount + holesCount * 2
         
         var triangleStack = TriangleStack(count: totalCount)
         
@@ -116,12 +116,7 @@ extension FlipShape {
         var sliceBuffer = MSliceBuffer(vertexCount: links.count, slices: layout.sliceList)
         sliceBuffer.addConections(triangles: &triangles)
 
-        var points = [FixVec](repeating: .zero, count: vertsCount)
-        for node in layout.navNodes {
-            points[node.vert.index] = node.vert.point
-        }
-        
-        var delaunay = Delaunay(points: points, triangles: triangles)
+        var delaunay = Delaunay(triangles: triangles)
 
         delaunay.build()
         

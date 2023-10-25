@@ -40,20 +40,26 @@ struct MSliceBuffer {
     private var edges: [Edge]
     private let vertexMarks: [Bool]
     
+    private static func id(n: Int, a: Int, b: Int) -> Int {
+        if a < b {
+            a * n + b
+        } else {
+            b * n + a
+        }
+    }
+    
     init(vertexCount: Int, slices: [MSlice]) {
         self.vertexCount = vertexCount
         var vertexMark = Array<Bool>(repeating: false, count: vertexCount)
         var edges = Array<Edge>(repeating: .empty, count: slices.count)
         for i in 0..<slices.count {
             let slice = slices[i]
+
             vertexMark[slice.a] = true
             vertexMark[slice.b] = true
-            let id: Int
-            if slice.a < slice.b {
-                id = slice.a * vertexCount + slice.b
-            } else {
-                id = slice.b * vertexCount + slice.a
-            }
+
+            let id = Self.id(n: vertexCount, a: slice.a, b: slice.b)
+
             edges[i] = Edge(id: id, edge: .empty, triangle: .empty)
         }
         
@@ -103,12 +109,8 @@ struct MSliceBuffer {
         guard self.vertexMarks[a] && self.vertexMarks[b] else {
             return .empty
         }
-        let id: Int
-        if a < b {
-            id = a &* self.vertexCount &+ b
-        } else {
-            id = b &* self.vertexCount &+ a
-        }
+        
+        let id = Self.id(n: self.vertexCount, a: a, b: b)
         
         var left = 0
         var right = self.edges.count &- 1

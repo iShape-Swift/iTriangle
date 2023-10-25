@@ -8,9 +8,11 @@
 import iFixFloat
 import iShape
 
+// a -> b -> c is always clock wise oriented
+
 @usableFromInline
 struct DTriangle {
-    
+
     @usableFromInline
     let index: Int
     
@@ -44,6 +46,22 @@ struct DTriangle {
         self.neighbors = Array3d(bc, ac, ab)
         assert(Triangle.isCW_or_Line(p0: a.point, p1: b.point, p2: c.point), "Triangle's points are not clock-wise ordered")
     }
+    
+//    @inlinable
+//    func vertex(neighbor: Int) -> DVertex {
+//        if neighbors.a == neighbor {
+//            return vertices.a
+//        } else if neighbors.b == neighbor {
+//            return vertices.b
+//        } else if neighbors.c == neighbor {
+//            return vertices.c
+//        }
+//        
+//        assertionFailure("Neighbor is not present")
+//        
+//        return DVertex.empty
+//    }
+
 
     @inlinable
     func opposite(neighbor: Int) -> Int {

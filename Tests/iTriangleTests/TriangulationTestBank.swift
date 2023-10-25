@@ -1552,3 +1552,74 @@ private extension FixVec {
     }
 }
 
+extension TriangulationTestBank {
+    
+    static func printRust() {
+        print("match index {")
+        for i in 0..<Self.data.count {
+            print("\(i) => {")
+            
+            Self.data[i].printRust()
+            print("}")
+        }
+        print("_ => {")
+        print("panic!(\"test not exist\")")
+        print("}")
+    }
+    
+}
+
+private extension TriangulationTest {
+    
+    func printRust() {
+        print("Test {")
+        print("shape: \(shape.rustString()),")
+        print("points: \(points.rustString()),")
+        print("indices: vec!\(indices),")
+        print("}")
+    }
+    
+}
+
+private extension FixShape {
+    func rustString() -> String {
+        if self.paths.count == 1 {
+            return "FixShape::new_with_contour(\(self.contour.rustString()))"
+        } else {
+            return "FixShape::new(\(self.paths.rustString()))"
+        }
+    }
+}
+
+private extension Array where Element == FixPath {
+    func rustString() -> String {
+        let last = self.count - 1
+        var str = "vec![\n"
+        for i in 0..<last {
+            str += self[i].rustString() + ",\n"
+        }
+        str += self[last].rustString()
+        str += "]"
+        return str
+    }
+}
+
+private extension Array where Element == FixVec {
+    func rustString() -> String {
+        let last = self.count - 1
+        var str = "vec![\n"
+        for i in 0..<last {
+            str += self[i].rustString() + ",\n"
+        }
+        str += self[last].rustString()
+        str += "]"
+        return str
+    }
+}
+
+private extension FixVec {
+    
+    func rustString() -> String {
+        "FixVec::new_i64(\(self.x), \(self.y))"
+    }
+}
