@@ -192,8 +192,8 @@ extension Delaunay {
                 if visited[edge.neighbor] {
                     continue
                 }
-                let next = self.triangles[edge.neighbor]
-                if builder.add(edge: edge, triangle: next) {
+                let triangle = self.triangles[edge.neighbor]
+                if builder.add(edge: edge, triangle: triangle) {
                     visited[edge.neighbor] = true
                 }
             }
