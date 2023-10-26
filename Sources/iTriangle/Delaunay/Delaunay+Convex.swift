@@ -8,9 +8,22 @@
 import iFixFloat
 import iShape
 
+public enum ConvexSide: UInt8 {
+    case inner = 1
+    case outer = 0
+    
+    init(isInner: Bool) {
+        if isInner {
+            self = .inner
+        } else {
+            self = .outer
+        }
+    }
+}
+
 public struct ConvexPath {
     public let path: FixPath
-    public let inner: [Bool]
+    public let side: [ConvexSide]
 }
 
 private struct Node {
@@ -19,17 +32,17 @@ private struct Node {
     let index: Int
     var prev: Int
     
-    let nextInner: Bool
+    var nextSide: ConvexSide
 
     let point: FixVec
  
     @inlinable
-    init(next: Int, index: Int, prev: Int, point: FixVec, nextInner: Bool) {
+    init(next: Int, index: Int, prev: Int, point: FixVec, nextSide: ConvexSide) {
         self.next = next
         self.index = index
         self.prev = prev
         self.point = point
-        self.nextInner = nextInner
+        self.nextSide = nextSide
     }
 }
 
@@ -40,24 +53,24 @@ private struct Edge {
     let b: Int
 }
 
-private struct Polygon {
+private struct ConvexPolygonBuilder {
 
     private var nodes: [Node]
     fileprivate var edges: [Edge]
     
-    var points: ConvexPath {
+    func makePath() -> ConvexPath {
         let count = nodes.count
         var path = [FixVec](repeating: .zero, count: count)
-        var inner = [Bool](repeating: false, count: count)
+        var inner = [ConvexSide](repeating: .outer, count: count)
 
         var n = self.nodes[count - 1]
         for i in 0..<count {
             path[i] = n.point
-            inner[i] = n.nextInner
+            inner[i] = n.nextSide
             n = self.nodes[n.next]
         }
 
-        return ConvexPath(path: path, inner: inner)
+        return ConvexPath(path: path, side: inner)
     }
     
     fileprivate init() {
@@ -80,7 +93,7 @@ private struct Polygon {
         let aa = va1 - va0
         let ap = v.point - va1
         
-        let apa = aa.crossProduct(ap)
+        let apa = aa.unsafeCrossProduct(ap)
         if apa > 0 {
             return false
         }
@@ -94,32 +107,34 @@ private struct Polygon {
         let bb = vb0 - vb1
         let bp = vb1 - v.point
         
-        let bpb = bp.crossProduct(bb)
+        let bpb = bp.unsafeCrossProduct(bb)
         if bpb > 0 {
             return false
         }
         
-        let n0 = triangle.neighbors[(vIndex + 1) % 3]
-        let n1 = triangle.neighbors[(vIndex + 2) % 3]
+        let prev_neighbor = triangle.neighbors[(vIndex + 2) % 3]
+        let next_neighbor = triangle.neighbors[(vIndex + 1) % 3]
 
-        let nodeIndex = self.nodes.count
-                         
-        let newNode = Node(next: node_b1.index, index: nodeIndex, prev: node_a1.index, point: v.point, nextInner: false)
+        let newIndex = self.nodes.count
+        let newSide = ConvexSide(isInner: prev_neighbor >= 0)
         
-        node_a1.next = nodeIndex
-        node_b1.prev = nodeIndex
+        let newNode = Node(next: node_b1.index, index: newIndex, prev: node_a1.index, point: v.point, nextSide: newSide)
+        
+        node_a1.next = newIndex
+        node_a1.nextSide = ConvexSide(isInner: next_neighbor >= 0)
+        node_b1.prev = newIndex
         
         self.nodes.append(newNode)
         self.nodes[node_a1.index] = node_a1
         self.nodes[node_b1.index] = node_b1
 
-        if n0 >= 0 {
-            let edge = Edge(triangleIndex: triangle.index, neighbor: n0, a: edge.a, b: nodeIndex)
+        if next_neighbor >= 0 {
+            let edge = Edge(triangleIndex: triangle.index, neighbor: next_neighbor, a: edge.a, b: newIndex)
             self.edges.append(edge)
         }
         
-        if n1 >= 0 {
-            let edge = Edge(triangleIndex: triangle.index, neighbor: n1, a: nodeIndex, b: edge.b)
+        if prev_neighbor >= 0 {
+            let edge = Edge(triangleIndex: triangle.index, neighbor: prev_neighbor, a: newIndex, b: edge.b)
             self.edges.append(edge)
         }
 
@@ -134,19 +149,23 @@ private struct Polygon {
         let ca = triangle.neighbors.b
         let ab = triangle.neighbors.c
         
-        self.nodes.append(Node(next: 1, index: 0, prev: 2, point: triangle.vertices.a.point, nextInner: ca >= 0))
-        self.nodes.append(Node(next: 2, index: 1, prev: 0, point: triangle.vertices.b.point, nextInner: ab >= 0))
-        self.nodes.append(Node(next: 0, index: 2, prev: 1, point: triangle.vertices.c.point, nextInner: bc >= 0))
+        let isCAInner = ca >= 0
+        let isABInner = ab >= 0
+        let isBCInner = bc >= 0
         
-        if ab >= 0 {
+        self.nodes.append(Node(next: 1, index: 0, prev: 2, point: triangle.vertices.a.point, nextSide: ConvexSide(isInner: isABInner)))
+        self.nodes.append(Node(next: 2, index: 1, prev: 0, point: triangle.vertices.b.point, nextSide: ConvexSide(isInner: isBCInner)))
+        self.nodes.append(Node(next: 0, index: 2, prev: 1, point: triangle.vertices.c.point, nextSide: ConvexSide(isInner: isCAInner)))
+        
+        if isABInner {
             self.edges.append(Edge(triangleIndex: triangle.index, neighbor: ab, a: 0, b: 1))
         }
 
-        if bc >= 0 {
+        if isBCInner {
             self.edges.append(Edge(triangleIndex: triangle.index, neighbor: bc, a: 1, b: 2))
         }
 
-        if ca >= 0 {
+        if isCAInner {
             self.edges.append(Edge(triangleIndex: triangle.index, neighbor: ca, a: 2, b: 0))
         }
     }
@@ -161,25 +180,25 @@ extension Delaunay {
         
         var visited = [Bool](repeating: false, count: n)
         
-        var polygon = Polygon()
+        var builder = ConvexPolygonBuilder()
         
         for i in 0..<n where !visited[i] {
             let first = self.triangles[i]
-            polygon.start(triangle: first)
+            builder.start(triangle: first)
             visited[i] = true
             
-            while !polygon.edges.isEmpty {
-                let edge = polygon.edges.removeLast()
+            while !builder.edges.isEmpty {
+                let edge = builder.edges.removeLast()
                 if visited[edge.neighbor] {
                     continue
                 }
                 let next = self.triangles[edge.neighbor]
-                if polygon.add(edge: edge, triangle: next) {
+                if builder.add(edge: edge, triangle: next) {
                     visited[edge.neighbor] = true
                 }
             }
             
-            result.append(polygon.points)
+            result.append(builder.makePath())
         }
 
         return result
