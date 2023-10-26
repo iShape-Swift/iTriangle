@@ -15,11 +15,6 @@ final class iTriangleTests: XCTestCase {
         XCTAssertEqual(test.indices, triangulation.indices)
         XCTAssertEqual(test.points, triangulation.points)
     }
-
-//    func test_x() throws {
-//        TriangulationTestBank.printSwift()
-//    }
-//    
     
     func test_00() throws {
         self.execute(index: 0)

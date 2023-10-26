@@ -309,5 +309,9 @@ final class iConvexTests: XCTestCase {
     func test_69() throws {
         self.execute(index: 69)
     }
+    
+    func test_70() throws {
+        self.execute(index: 70)
+    }
 
 }
