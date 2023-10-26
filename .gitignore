@@ -7,3 +7,13 @@ DerivedData/
 .swiftpm/config/registries.json
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .netrc
+
+# IntelliJ IDEA specific
+.idea/
+*.iml
+
+# Visual Studio Code specific
+.vscode/
+
+# macOS system files
+.DS_Store

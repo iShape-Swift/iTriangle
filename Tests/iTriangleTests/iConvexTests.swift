@@ -1,25 +1,34 @@
+//
+//  iConvexTests.swift
+//
+//
+//  Created by Nail Sharipov on 26.10.2023.
+//
+
 import XCTest
 import iShape
 import iFixFloat
 @testable import iTriangle
 
-final class iTriangleTests: XCTestCase {
+extension ConvexPath: Equatable {
+    public static func == (lhs: ConvexPath, rhs: ConvexPath) -> Bool {
+        lhs.path == rhs.path && lhs.side == rhs.side 
+    }
+}
+
+
+final class iConvexTests: XCTestCase {
 
     private func execute(index: Int) {
         let test = TriangulationTestBank.data[index]
         
-        let triangulation = test.shape.triangulate()
+        let polygons = test.shape.decomposeToConvexPolygons()
         
-        XCTAssertTrue(!triangulation.indices.isEmpty)
+        XCTAssertTrue(!polygons.isEmpty)
         
-        XCTAssertEqual(test.indices, triangulation.indices)
-        XCTAssertEqual(test.points, triangulation.points)
+        XCTAssertEqual(test.polygons, polygons)
     }
-
-//    func test_x() throws {
-//        TriangulationTestBank.printSwift()
-//    }
-//    
+    
     
     func test_00() throws {
         self.execute(index: 0)
@@ -301,7 +310,4 @@ final class iTriangleTests: XCTestCase {
         self.execute(index: 69)
     }
 
-    func test_70() throws {
-        self.execute(index: 70)
-    }
 }
