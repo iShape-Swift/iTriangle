@@ -54,7 +54,7 @@ extension FlipShape {
         while j < specs.count && !mPolies.isEmpty {
             let spec = specs[j]
 
-            let px = Self.fill(mPolies: &mPolies, verts: navs, stop: spec.sort)
+            let px = Self.fill(mPolies: &mPolies, verts: navs, stop: spec.sort, stopIndex: spec.index)
 
             let nav = navs[spec.index]
             
@@ -194,7 +194,8 @@ extension FlipShape {
         let prev: Int
     }
 
-    private static func fill(mPolies: inout [MPoly], verts: [MNavNode], stop: FixFloat) -> NavIndex {
+    // update next and prev ends of all polies and find index of next and prev polies if present
+    private static func fill(mPolies: inout [MPoly], verts: [MNavNode], stop: FixFloat, stopIndex: Int) -> NavIndex {
         var nextPolyIx: Int = .empty
         var prevPolyIx: Int = .empty
         for i in 0..<mPolies.count {
@@ -208,7 +209,7 @@ extension FlipShape {
                 n1 = verts[n1.next]
             }
 
-            if n1.vert.point.bitPack == stop {
+            if n1.vert.index == stopIndex {
                 mPoly.next = n1.index
                 prevPolyIx = i
             } else {
@@ -223,7 +224,7 @@ extension FlipShape {
                 p1 = verts[p1.prev]
             }
             
-            if p1.vert.point.bitPack == stop {
+            if p1.vert.index == stopIndex {
                 mPoly.prev = p1.index
                 nextPolyIx = i
             } else {
