@@ -252,8 +252,8 @@ extension FlipShape {
 
     private static func findNodeToMerge(prev: MNavNode, next: MNavNode, merge: MNavNode, startNode: Int, specs: [MSpecialNode], navs: [MNavNode]) -> MSolution {
         let a0 = next.vert.point
-        let a1 = navs[next.next].vert.point
-        let b1 = navs[prev.prev].vert.point
+        let va1 = navs[next.next].vert
+        let vb1 = navs[prev.prev].vert
         let b0 = prev.vert.point
 
         let m = merge.vert.point
@@ -266,31 +266,34 @@ extension FlipShape {
             // middle: m, a1, b1
             // bottom: m, b1, b0
 
-            let minX = min(a1.x, b1.x)
+            let minX = min(va1.point.x, vb1.point.x)
             
             var i = startNode
             
             while i < specs.count {
                 let spec = specs[i]
                 let nav = navs[spec.index]
-                let p = nav.vert.point
-                if p.x > minX {
+                let v = nav.vert
+                if v.point.x > minX {
                     break
                 }
                 if spec.type == .split || spec.type == .end {
-                    let isContain = Triangle.isContain(p: p, p0: m, p1: a0, p2: a1)
-                    || Triangle.isContain(p: p, p0: m, p1: a1, p2: b1)
-                    || Triangle.isContain(p: p, p0: m, p1: b1, p2: b0)
-                    
-                    if isContain {
-                        return MSolution(type: .direct, a: merge.index, b: nav.index, nodeIndex: i)
+                    // if it end it can be unreachable (same point for different vertices!)
+                    let isBadEnd = v.point == va1.point && v.index != va1.index || v.point == vb1.point && v.index != vb1.index
+                    if !isBadEnd {
+                        let isContain = Triangle.isContain(p: v.point, p0: m, p1: a0, p2: va1.point)
+                        || Triangle.isContain(p: v.point, p0: m, p1: va1.point, p2: vb1.point)
+                        || Triangle.isContain(p: v.point, p0: m, p1: vb1.point, p2: b0)
+                        if isContain {
+                            return MSolution(type: .direct, a: merge.index, b: nav.index, nodeIndex: i)
+                        }
                     }
                 }
                 i += 1
             }
         }
         
-        let compare = a1.x == b1.x ? m.sqrDistance(a1) < m.sqrDistance(b1) : a1.x < b1.x
+        let compare = va1.point.x == vb1.point.x ? m.sqrDistance(va1.point) < m.sqrDistance(vb1.point) : va1.point.x < vb1.point.x
         
         if compare {
             return MSolution(type: .next, a: merge.index, b: next.next, nodeIndex: .empty)
