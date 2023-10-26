@@ -32,14 +32,11 @@ public extension FixShape {
 
         var points = [FixVec]()
         var indices = [Int]()
-        var offset = 0
 
         for delaunay in results {
-            let triangulation = delaunay.triangulation(shifted: offset)
+            let triangulation = delaunay.triangulation(shifted: points.count)
             indices.append(contentsOf: triangulation.indices)
             points.append(contentsOf: triangulation.points)
-
-            offset += points.count
         }
 
         return Triangulation(points: points, indices: indices)
