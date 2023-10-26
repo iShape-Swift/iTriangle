@@ -102,7 +102,7 @@ extension Array where Element == MNavNode {
         let stop = p0.x
         let v = p1 - p0
         while n.vert.point.x <= stop {
-            let s = v.crossProduct(n.vert.point - p0)
+            let s = v.unsafeCrossProduct(n.vert.point - p0)
             if s >= 0 {
                 return true
             }
@@ -118,7 +118,7 @@ extension Array where Element == MNavNode {
         let stop = p0.x
         let v = p1 - p0
         while n.vert.point.x > stop {
-            let s = v.crossProduct(n.vert.point - p0)
+            let s = v.unsafeCrossProduct(n.vert.point - p0)
             if s >= 0 {
                 return true
             }
