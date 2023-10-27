@@ -20,7 +20,7 @@ extension ConvexPath: Equatable {
 final class iConvexTests: XCTestCase {
 
     private func execute(index: Int) {
-        let test = TriangulationTestBank.data[index]
+        let test = TriangulationTestBank.load(index: index)
         
         let polygons = test.shape.decomposeToConvexPolygons()
         
@@ -28,7 +28,7 @@ final class iConvexTests: XCTestCase {
         
         XCTAssertEqual(test.polygons, polygons)
     }
-    
+
     
     func test_00() throws {
         self.execute(index: 0)

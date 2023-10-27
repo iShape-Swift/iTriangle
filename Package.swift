@@ -13,9 +13,13 @@ let package = Package(
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
-        .package(url: "https://github.com/iShape-Swift/iFixFloat", from: "1.1.0"),
-        .package(url: "https://github.com/iShape-Swift/iShape", from: "1.0.2"),
-        .package(url: "https://github.com/iShape-Swift/iOverlay", from: "1.0.2")
+//        .package(url: "https://github.com/iShape-Swift/iFixFloat", from: "1.1.0"),
+//        .package(url: "https://github.com/iShape-Swift/iShape", from: "1.0.2"),
+//        .package(url: "https://github.com/iShape-Swift/iOverlay", from: "1.0.2")
+        .package(path: "../iFixFloat"),  // Local path to iFixFloat
+        .package(path: "../iShape"),
+        .package(path: "../iOverlay")
+        
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -25,6 +29,10 @@ let package = Package(
             dependencies: ["iFixFloat", "iShape", "iOverlay"]),
         .testTarget(
             name: "iTriangleTests",
-            dependencies: ["iTriangle"]),
+            dependencies: ["iTriangle"],
+            resources: [
+                .process("Triangulation")
+            ]
+        ),
     ]
 )

@@ -6,7 +6,7 @@ import iFixFloat
 final class iTriangleTests: XCTestCase {
 
     private func execute(index: Int) {
-        let test = TriangulationTestBank.data[index]
+        let test = TriangulationTestBank.load(index: index)
         
         let triangulation = test.shape.triangulate()
         
