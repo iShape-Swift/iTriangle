@@ -12,31 +12,15 @@ Complex polygon triangulation, tessellation, and splitting into convex polygons.
 <img src="https://github.com/iShape-Swift/iShapeTriangulation/blob/master/Readme/star_polygon.svg" width="500" />
 </p>
 
-## Tessellation
-<p align="center">
-<img src="https://github.com/iShape-Swift/iShapeTriangulation/blob/master/Readme/eagle_tessellation.svg" width="800" />
-</p>
-
-## Centroid net
-<p align="center">
-<img src="https://github.com/iShape-Swift/iShapeTriangulation/blob/master/Readme/eagle_centroid.svg" width="800" />
-</p>
-
 ## Features
 
-- Fast O(n*log(n)) algorithm based on "Triangulation of Monotone Polygons"
+- Delaunay triangulation
+- Break into convex polygons
+- Support any kind of polygons
+- Deterministic
 
-- All code is written in accordance with "Data-Oriented Design." No reference types like classes, just structs.
-
-- Supports polygons with holes, self-intersections, and other degenerate cases
-
-- Supports tessellation
-
-- Supports breaking into convex polygons
-
-- Supports building centroid nets
-
-- Utilizes integer geometry for calculations
+## Documentation
+- [Delaunay](https://ishape-rust.github.io/iShape-js/triangle/delaunay.html)
 
 ## Basic Usage
 
