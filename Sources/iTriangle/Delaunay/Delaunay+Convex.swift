@@ -24,6 +24,11 @@ public enum ConvexSide: UInt8 {
 public struct ConvexPath {
     public let path: FixPath
     public let side: [ConvexSide]
+    
+    public init(path: FixPath, side: [ConvexSide]) {
+        self.path = path
+        self.side = side
+    }
 }
 
 private struct Node {
