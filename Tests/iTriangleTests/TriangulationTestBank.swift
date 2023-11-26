@@ -5,12 +5,14 @@ import simd
 @testable import iTriangle
 
 struct TriangulationTest: Decodable {
+    let scale: Int64
     let shape: FixShape
     let points: FixPath
     let indices: [Int]
     let polygons: [ConvexPath]
 
     enum CodingKeys: String, CodingKey {
+        case scale
         case shape
         case points
         case indices
