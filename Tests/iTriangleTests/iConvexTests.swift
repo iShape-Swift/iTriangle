@@ -22,7 +22,7 @@ final class iConvexTests: XCTestCase {
     private func execute(index: Int) {
         let test = TriangulationTestBank.load(index: index)
         
-        let polygons = test.shape.decomposeToConvexPolygons()
+        let polygons = test.shape.decomposeToConvexPolygons(validateRule: .evenOdd)
         
         XCTAssertTrue(!polygons.isEmpty)
         

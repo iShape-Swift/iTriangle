@@ -55,7 +55,7 @@ struct NodeLayout {
     }
 }
 
-extension FlipShape {
+extension FixShape {
     
     @inlinable
     var nLayout: NodeLayout {

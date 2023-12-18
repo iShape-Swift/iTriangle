@@ -9,25 +9,18 @@ import iFixFloat
 import iShape
 import iOverlay
 
-public struct Triangulation {
-    
-    public let points: [FixVec]
-    public let indices: [Int]
-    
-}
-
 public extension FixShape {
     
-    func triangulate(validate: Bool = true, minArea: Int64 = 0) -> Triangulation {
-        guard validate else {
-            if let delaunay = self.flip.delaunay() {
+    func triangulate(validateRule: FillRule? = .nonZero, minArea: Int64 = 0) -> Triangulation {
+        guard let fillRule = validateRule else {
+            if let delaunay = self.delaunay() {
                 return delaunay.triangulation()
             } else {
                 return Triangulation(points: [], indices: [])
             }
         }
         
-        let shapes = self.resolveSelfIntersection(minArea: minArea)
+        let shapes = self.simplify(fillRule: fillRule, minArea: minArea)
         
         let results = shapes.delaunay()
 
@@ -43,16 +36,16 @@ public extension FixShape {
         return Triangulation(points: points, indices: indices)
     }
     
-    func decomposeToConvexPolygons(validate: Bool = true, minArea: Int64 = 0) -> [ConvexPath] {
-        guard validate else {
-            if let delaunay = self.flip.delaunay() {
+    func decomposeToConvexPolygons(validateRule: FillRule? = .nonZero, minArea: Int64 = 0) -> [ConvexPath] {
+        guard let fillRule = validateRule else {
+            if let delaunay = self.delaunay() {
                 return delaunay.convexPolygons()
             } else {
                 return []
             }
         }
         
-        let shapes = self.resolveSelfIntersection(minArea: minArea)
+        let shapes = self.simplify(fillRule: fillRule, minArea: minArea)
         
         if shapes.count == 1 && shapes[0].isConvexPolygon {
             var path = shapes[0].contour
@@ -77,9 +70,5 @@ public extension FixShape {
             return polygons
         }
     }
-    
-    func delaunay() -> Delaunay? {
-        self.flip.delaunay()
-    }
-    
+
 }

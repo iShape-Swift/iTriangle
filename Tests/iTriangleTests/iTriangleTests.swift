@@ -8,7 +8,7 @@ final class iTriangleTests: XCTestCase {
     private func execute(index: Int) {
         let test = TriangulationTestBank.load(index: index)
         
-        let triangulation = test.shape.triangulate()
+        let triangulation = test.shape.triangulate(validateRule: .evenOdd)
         
         XCTAssertTrue(!triangulation.indices.isEmpty)
         

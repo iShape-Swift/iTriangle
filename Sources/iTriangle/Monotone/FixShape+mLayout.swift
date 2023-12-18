@@ -24,7 +24,7 @@ struct MLayout {
     let status: MLayoutStatus
 }
 
-extension FlipShape {
+extension FixShape {
 
     var mLayout: MLayout {
         let nLayout = self.nLayout

@@ -8,7 +8,7 @@
 import iFixFloat
 import iShape
 
-extension FlipShape {
+public extension FixShape {
     
     private struct Edge {
         let a: Int            // vertex index

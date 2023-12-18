@@ -13,7 +13,7 @@ public extension FixShapes {
         var result = [Delaunay]()
         result.reserveCapacity(self.count)
         for shape in self {
-            if let delaunay = shape.flip.delaunay() {
+            if let delaunay = shape.delaunay() {
                 result.append(delaunay)
             }
         }
