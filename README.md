@@ -1,5 +1,5 @@
 # iTriangle
-Complex polygon triangulation, tessellation, and splitting into convex polygons. Initially, for the first triangulation, it uses monotone polygons' triangulation, and then it applies an iterative algorithm to create Delaunay triangulation. If your polygon has self-intersections or some degenerate cases, they will be resolved with [iOverlay][https://github.com/iShape-Swift/iOverlay]. iTriangle uses fixed-float math in the range -1,000,000.000 to 1,000,000.000 with a precision of 0.001, but the recommended range is -100,000 to 100,000 with precision.
+Polygon triangulation, and breaking into convex polygons.
  
 ## Delaunay triangulation
 <p align="center">
