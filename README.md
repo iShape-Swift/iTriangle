@@ -1,6 +1,5 @@
 # iTriangle
-Complex polygon triangulation, tessellation, and splitting into convex polygons. Initially, for the first triangulation, it uses monotone polygons' triangulation, and then it applies an iterative algorithm to create Delaunay triangulation. If your polygon has self-intersections or some degenerate cases, they will be resolved with [iOverlay] 
- [https://github.com/iShape-Swift/iOverlay]. iTriangle uses fixed-float math in the range -1,000,000.000 to 1,000,000.000 with a precision of 0.001, but the recommended range is -100,000 to 100,000 with precision.
+Complex polygon triangulation, tessellation, and splitting into convex polygons. Initially, for the first triangulation, it uses monotone polygons' triangulation, and then it applies an iterative algorithm to create Delaunay triangulation. If your polygon has self-intersections or some degenerate cases, they will be resolved with [iOverlay][https://github.com/iShape-Swift/iOverlay]. iTriangle uses fixed-float math in the range -1,000,000.000 to 1,000,000.000 with a precision of 0.001, but the recommended range is -100,000 to 100,000 with precision.
  
 ## Delaunay triangulation
 <p align="center">
@@ -14,10 +13,9 @@ Complex polygon triangulation, tessellation, and splitting into convex polygons.
 
 ## Features
 
-- Delaunay triangulation
-- Break into convex polygons
-- Support any kind of polygons
-- Deterministic
+- **Delaunay Triangulation**: *Efficient and robust implementation for generating Delaunay triangulations.*
+- **Convex Polygons**: *Break complex polygons into simpler convex polygons.*
+- **Self-Intersection**: *Smart intersection resolution with Even-Odd or Non-Zero rules.*
 
 ## Documentation
 - [Delaunay](https://ishape-rust.github.io/iShape-js/triangle/delaunay.html)
