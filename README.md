@@ -1,5 +1,5 @@
 # iTriangle
-Polygon triangulation, and breaking into convex polygons.
+A fast and efficient library for Delaunay triangulation and converting complex polygons into convex shapes, including advanced self-intersection resolution.
  
 ## Delaunay triangulation
 <p align="center">
