@@ -15,7 +15,7 @@ let package = Package(
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/iShape-Swift/iFixFloat", from: "1.1.0"),
         .package(url: "https://github.com/iShape-Swift/iShape", from: "1.2.0"),
-        .package(url: "https://github.com/iShape-Swift/iOverlay", from: "1.3.0")
+        .package(url: "https://github.com/iShape-Swift/iOverlay", from: "1.4.1")
 //        .package(path: "../iFixFloat"),
 //        .package(path: "../iShape"),
 //        .package(path: "../iOverlay")
