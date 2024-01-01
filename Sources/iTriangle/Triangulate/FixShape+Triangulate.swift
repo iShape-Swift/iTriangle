@@ -1,6 +1,6 @@
 //
-//  FixShape.swift
-//  
+//  FixShape+Triangulate.swift
+//
 //
 //  Created by Nail Sharipov on 10.07.2023.
 //
@@ -11,6 +11,18 @@ import iOverlay
 
 public extension FixShape {
     
+    /// Triangulates the shape.
+    ///
+    /// If `validateRule` is provided, the shape will be processed using the poly bool library to ensure correctness
+    /// according to the specified fill rule. If `validateRule` is `nil`, the shape is assumed to be "correct" and
+    /// will be triangulated as is.
+    ///
+    /// For more details on the poly bool library: [iOverlay Documentation](https://ishape-rust.github.io/iShape-js/overlay/filling_rules.html)
+    ///
+    /// - Parameters:
+    ///   - validateRule: An optional `FillRule` to validate and fix the shape. Defaults to `.nonZero`.
+    ///   - minArea: The minimum area to consider for a shape. Defaults to `0`.
+    /// - Returns: A `Triangulation` instance representing the triangulated shape.
     func triangulate(validateRule: FillRule? = .nonZero, minArea: Int64 = 0) -> Triangulation {
         guard let fillRule = validateRule else {
             if let delaunay = self.delaunay() {
@@ -36,6 +48,18 @@ public extension FixShape {
         return Triangulation(points: points, indices: indices)
     }
     
+    /// Decomposes the shape into convex polygons.
+    ///
+    /// Similar to `triangulate`, if `validateRule` is provided, the shape undergoes a fixing process using the poly
+    /// bool library according to the specified fill rule. If `validateRule` is `nil`, the shape is treated as "correct"
+    /// and decomposed directly into convex polygons.
+    ///
+    /// For more details on the poly bool library: [iOverlay Documentation](https://ishape-rust.github.io/iShape-js/overlay/filling_rules.html)
+    ///
+    /// - Parameters:
+    ///   - validateRule: An optional `FillRule` to validate and fix the shape. Defaults to `.nonZero`.
+    ///   - minArea: The minimum area to consider for a shape. Defaults to `0`.
+    /// - Returns: An array of `ConvexPath` representing the decomposed convex polygons.
     func decomposeToConvexPolygons(validateRule: FillRule? = .nonZero, minArea: Int64 = 0) -> [ConvexPath] {
         guard let fillRule = validateRule else {
             if let delaunay = self.delaunay() {
