@@ -73,9 +73,7 @@ let triangulation = shape.triangulate()
 print("points: \(triangulation.points.map({ $0.float }))")
 print("indices: \(triangulation.indices)")
 ```
-While creating a shape, you can add any number of holes. The paths you add can be self-intersecting. Self-intersections will be removed during the triangulation process using the even-odd rule.
-As a result, you will receive a "Triangulation" structure of int-points and indices; all triangles must be counted in a clockwise direction. Don't forget to convert it back to your preferred data type like float2, CGPoint, etc.
-
+**Output Triangulation**: *triangles indices and vertices, where all triangles oriented in a clockwise direction.*
 
 ## Installation
 
@@ -88,7 +86,7 @@ let package = Package(
     name: "[your name]",
     products: [
         dependencies: [
-            .package(url: "https://github.com/iShape-Swift/iTriangle", from: "1.0.0")
+            .package(url: "https://github.com/iShape-Swift/iTriangle", from: "1.4.0")
         ],
         targets: [
             .target(
