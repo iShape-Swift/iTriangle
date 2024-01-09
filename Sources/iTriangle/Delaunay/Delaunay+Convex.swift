@@ -8,46 +8,20 @@
 import iFixFloat
 import iShape
 
-public enum ConvexSide: UInt8 {
-    case inner = 1
-    case outer = 0
-    
-    init(isInner: Bool) {
-        if isInner {
-            self = .inner
-        } else {
-            self = .outer
-        }
-    }
-}
-
-public struct ConvexPath {
-    public let path: FixPath
-    public let side: [ConvexSide]
-    
-    public init(path: FixPath, side: [ConvexSide]) {
-        self.path = path
-        self.side = side
-    }
-}
-
 private struct Node {
 
     var next: Int
     let index: Int
     var prev: Int
-    
-    var nextSide: ConvexSide
 
     let point: FixVec
  
     @inlinable
-    init(next: Int, index: Int, prev: Int, point: FixVec, nextSide: ConvexSide) {
+    init(next: Int, index: Int, prev: Int, point: FixVec) {
         self.next = next
         self.index = index
         self.prev = prev
         self.point = point
-        self.nextSide = nextSide
     }
 }
 
@@ -63,19 +37,17 @@ private struct ConvexPolygonBuilder {
     private var nodes: [Node]
     fileprivate var edges: [Edge]
     
-    func makePath() -> ConvexPath {
+    func makePath() -> FixPath {
         let count = nodes.count
         var path = [FixVec](repeating: .zero, count: count)
-        var inner = [ConvexSide](repeating: .outer, count: count)
 
         var n = self.nodes[count - 1]
         for i in 0..<count {
             path[i] = n.point
-            inner[i] = n.nextSide
             n = self.nodes[n.next]
         }
 
-        return ConvexPath(path: path, side: inner)
+        return path
     }
     
     fileprivate init() {
@@ -121,12 +93,10 @@ private struct ConvexPolygonBuilder {
         let next_neighbor = triangle.neighbors[(vIndex + 1) % 3]
 
         let newIndex = self.nodes.count
-        let newSide = ConvexSide(isInner: prev_neighbor >= 0)
-        
-        let newNode = Node(next: node_b1.index, index: newIndex, prev: node_a1.index, point: v.point, nextSide: newSide)
+
+        let newNode = Node(next: node_b1.index, index: newIndex, prev: node_a1.index, point: v.point)
         
         node_a1.next = newIndex
-        node_a1.nextSide = ConvexSide(isInner: next_neighbor >= 0)
         node_b1.prev = newIndex
         
         self.nodes.append(newNode)
@@ -158,9 +128,9 @@ private struct ConvexPolygonBuilder {
         let isABInner = ab >= 0
         let isBCInner = bc >= 0
         
-        self.nodes.append(Node(next: 1, index: 0, prev: 2, point: triangle.vertices.a.point, nextSide: ConvexSide(isInner: isABInner)))
-        self.nodes.append(Node(next: 2, index: 1, prev: 0, point: triangle.vertices.b.point, nextSide: ConvexSide(isInner: isBCInner)))
-        self.nodes.append(Node(next: 0, index: 2, prev: 1, point: triangle.vertices.c.point, nextSide: ConvexSide(isInner: isCAInner)))
+        self.nodes.append(Node(next: 1, index: 0, prev: 2, point: triangle.vertices.a.point))
+        self.nodes.append(Node(next: 2, index: 1, prev: 0, point: triangle.vertices.b.point))
+        self.nodes.append(Node(next: 0, index: 2, prev: 1, point: triangle.vertices.c.point))
         
         if isABInner {
             self.edges.append(Edge(triangleIndex: triangle.index, neighbor: ab, a: 0, b: 1))
@@ -179,8 +149,8 @@ private struct ConvexPolygonBuilder {
 
 extension Delaunay {
 
-    public func convexPolygons() -> [ConvexPath] {
-        var result = [ConvexPath]()
+    public func convexPolygons() -> [FixPath] {
+        var result = [FixPath]()
         let n = self.triangles.count
         
         var visited = [Bool](repeating: false, count: n)

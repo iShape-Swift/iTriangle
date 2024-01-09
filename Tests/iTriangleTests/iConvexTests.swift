@@ -10,12 +10,6 @@ import iShape
 import iFixFloat
 @testable import iTriangle
 
-extension ConvexPath: Equatable {
-    public static func == (lhs: ConvexPath, rhs: ConvexPath) -> Bool {
-        lhs.path == rhs.path && lhs.side == rhs.side 
-    }
-}
-
 
 final class iConvexTests: XCTestCase {
 

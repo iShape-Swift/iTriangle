@@ -5,32 +5,16 @@ import simd
 @testable import iTriangle
 
 struct TriangulationTest: Decodable {
-    let scale: Int64
     let shape: FixShape
     let points: FixPath
     let indices: [Int]
-    let polygons: [ConvexPath]
+    let polygons: [FixPath]
 
     enum CodingKeys: String, CodingKey {
-        case scale
         case shape
         case points
         case indices
         case polygons
-    }
-}
-
-extension ConvexPath: Decodable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let path = try container.decode(FixPath.self, forKey: .path)
-        let side = try container.decode([ConvexSide].self, forKey: .side)
-        self.init(path: path, side: side)
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case path
-        case side
     }
 }
 
@@ -46,13 +30,6 @@ extension FixShape: Decodable {
     }
 }
 
-extension ConvexSide: Decodable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        let value = try container.decode(UInt8.self)
-        self = ConvexSide(rawValue: value) ?? .outer
-    }
-}
 
 struct TriangulationTestBank {
     

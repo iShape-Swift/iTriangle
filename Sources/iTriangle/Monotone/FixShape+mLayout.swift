@@ -95,7 +95,7 @@ extension FixShape {
                     
                     let sp = nav.vert.point
                     
-                    let isNext = a.x == b.x ? sp.sqrDistance(a) < sp.sqrDistance(b) : a.x > b.x
+                    let isNext = a.x == b.x ? sp.fixSqrDistance(a) < sp.fixSqrDistance(b) : a.x > b.x
                     
                     if isNext {
                         let nv = mPoly.next
@@ -293,7 +293,7 @@ extension FixShape {
             }
         }
         
-        let compare = va1.point.x == vb1.point.x ? m.sqrDistance(va1.point) < m.sqrDistance(vb1.point) : va1.point.x < vb1.point.x
+        let compare = va1.point.x == vb1.point.x ? m.fixSqrDistance(va1.point) < m.fixSqrDistance(vb1.point) : va1.point.x < vb1.point.x
         
         if compare {
             return MSolution(type: .next, a: merge.index, b: next.next, nodeIndex: .empty)

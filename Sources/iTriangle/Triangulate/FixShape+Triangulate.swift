@@ -60,7 +60,7 @@ public extension FixShape {
     ///   - validateRule: An optional `FillRule` to validate and fix the shape. Defaults to `.nonZero`.
     ///   - minArea: The minimum area to consider for a shape. Defaults to `0`.
     /// - Returns: An array of `ConvexPath` representing the decomposed convex polygons.
-    func decomposeToConvexPolygons(validateRule: FillRule? = .nonZero, minArea: Int64 = 0) -> [ConvexPath] {
+    func decomposeToConvexPolygons(validateRule: FillRule? = .nonZero, minArea: Int64 = 0) -> [FixPath] {
         guard let fillRule = validateRule else {
             if let delaunay = self.delaunay() {
                 return delaunay.convexPolygons()
@@ -72,18 +72,9 @@ public extension FixShape {
         let shapes = self.simplify(fillRule: fillRule, minArea: minArea)
         
         if shapes.count == 1 && shapes[0].isConvexPolygon {
-            var path = shapes[0].contour
-            path.removeDegenerates()
-            
-            if path.area < 0 {
-                path.reverse()
-            }
-            
-            let side = [ConvexSide](repeating: .outer, count: path.count)
-
-            return [ConvexPath(path: path, side: side)]
+            return shapes[0].paths
         } else {
-            var polygons = [ConvexPath]()
+            var polygons = [FixPath]()
             for shape in shapes {
                 if let delaunay = shape.delaunay() {
                     let subPolygons = delaunay.convexPolygons()
