@@ -70,7 +70,7 @@ private struct ConvexPolygonBuilder {
         let aa = va1 - va0
         let ap = v.point - va1
         
-        let apa = aa.unsafeCrossProduct(ap)
+        let apa = aa.crossProduct(ap)
         if apa > 0 {
             return false
         }
@@ -84,7 +84,7 @@ private struct ConvexPolygonBuilder {
         let bb = vb0 - vb1
         let bp = vb1 - v.point
         
-        let bpb = bp.unsafeCrossProduct(bb)
+        let bpb = bp.crossProduct(bb)
         if bpb > 0 {
             return false
         }

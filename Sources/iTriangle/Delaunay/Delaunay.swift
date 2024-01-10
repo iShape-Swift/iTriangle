@@ -404,8 +404,8 @@ public struct Delaunay {
         let v12 = p1 - p2
         let v32 = p3 - p2
         
-        let cosA = v10.unsafeDotProduct(v30)
-        let cosB = v12.unsafeDotProduct(v32)
+        let cosA = v10.dotProduct(v30)
+        let cosB = v12.dotProduct(v32)
         
         if cosA < 0 && cosB < 0 {
             // A > 90 and B > 90
@@ -419,8 +419,8 @@ public struct Delaunay {
             return true
         }
         
-        let sinA = abs(v10.unsafeCrossProduct(v30)) // A <= 180
-        let sinB = abs(v12.unsafeCrossProduct(v32)) // B <= 180
+        let sinA = abs(v10.crossProduct(v30)) // A <= 180
+        let sinB = abs(v12.crossProduct(v32)) // B <= 180
         
         // cosA and cosB has different sign
         
@@ -465,8 +465,8 @@ public struct Delaunay {
         let v12 = p1 - p2
         let v32 = p3 - p2
         
-        let cosA = v10.unsafeDotProduct(v30)
-        let cosB = v12.unsafeDotProduct(v32)
+        let cosA = v10.dotProduct(v30)
+        let cosB = v12.dotProduct(v32)
         
         if cosA < 0 && cosB < 0 {
             // A > 90 and B > 90
@@ -480,8 +480,8 @@ public struct Delaunay {
             return .a_and_b_less_90
         }
         
-        let sinA = abs(v10.unsafeCrossProduct(v30)) // A <= 180
-        let sinB = abs(v12.unsafeCrossProduct(v32)) // B <= 180
+        let sinA = abs(v10.crossProduct(v30)) // A <= 180
+        let sinB = abs(v12.crossProduct(v32)) // B <= 180
         
         // cosA and cosB has different sign
         

@@ -313,8 +313,8 @@ extension FixShape {
     }
     
     private static func isContain(point: FixVec, a0: FixVec, a1: FixVec, b0: FixVec, b1: FixVec) -> Bool {
-        let sa = (a1 - a0).unsafeCrossProduct(point - a0)
-        let sb = (b1 - b0).unsafeCrossProduct(point - b0)
+        let sa = (a1 - a0).crossProduct(point - a0)
+        let sb = (b1 - b0).crossProduct(point - b0)
         
         return sa <= 0 && sb >= 0
     }
