@@ -165,7 +165,7 @@ public extension FixShape {
                     var cx = c
                     var ax0 = a0
                     var ax1 = a1
-                    var ax1Bit: Int64 = .min
+                    var ax1Bit: UInt64 = .min
                     repeat {
                         let isCW_or_Line = Triangle.isCW_or_Line(p0: cx.vert.point, p1: ax0.vert.point, p2: ax1.vert.point)
                         
@@ -197,7 +197,7 @@ public extension FixShape {
                     var cx = c
                     var bx0 = b0
                     var bx1 = b1
-                    var bx1Bit: Int64 = .min
+                    var bx1Bit: UInt64 = .min
                     repeat {
                         let isCW_or_Line = Triangle.isCW_or_Line(p0: cx.vert.point, p1: bx1.vert.point, p2: bx0.vert.point)
                         if isCW_or_Line {

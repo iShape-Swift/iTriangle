@@ -195,7 +195,7 @@ extension FixShape {
     }
 
     // update next and prev ends of all polies and find index of next and prev polies if present
-    private static func fill(mPolies: inout [MPoly], verts: [MNavNode], stop: FixFloat, stopIndex: Int) -> NavIndex {
+    private static func fill(mPolies: inout [MPoly], verts: [MNavNode], stop: BitPack, stopIndex: Int) -> NavIndex {
         var nextPolyIx: Int = .empty
         var prevPolyIx: Int = .empty
         for i in 0..<mPolies.count {

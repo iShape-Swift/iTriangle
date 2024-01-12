@@ -29,10 +29,10 @@ struct MSpecialNode {
     let index: Int
 
     @usableFromInline
-    let sort: FixFloat
+    let sort: BitPack
     
     @inlinable
-    init(index: Int, type: MNodeType, sort: FixFloat) {
+    init(index: Int, type: MNodeType, sort: BitPack) {
         self.index = index
         self.type = type
         self.sort = sort
