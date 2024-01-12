@@ -3,12 +3,12 @@ A fast and efficient library for Delaunay triangulation and converting complex p
  
 ## Delaunay triangulation
 <p align="center">
-<img src="https://github.com/iShape-Swift/iShapeTriangulation/blob/master/Readme/star_triangle.svg" width="500"/>
+  <img src="Readme/star_triangle.svg" width="500"/>
 </p>
 
 ## Breaking into convex polygons
 <p align="center">
-<img src="https://github.com/iShape-Swift/iShapeTriangulation/blob/master/Readme/star_polygon.svg" width="500" />
+  <img src="Readme/star_polygon.svg" width="500"/>
 </p>
 
 ## Features
@@ -31,7 +31,7 @@ import iTriangle
 
 After that, represent your polygon as an array of vertices. Here's an example of a cheese polygon:
 <p align="center">
-<img src="https://github.com/iShape-Swift/iTriangle/blob/main/Reeadme/cheese_example.svg" width="600"/>
+ <img src="Readme/cheese_example.svg" width="600"/>
 </p>
 
 ```swift
