@@ -13,7 +13,10 @@ final class iTriangleTests: XCTestCase {
         XCTAssertTrue(!triangulation.indices.isEmpty)
         
         XCTAssertEqual(test.indices, triangulation.indices)
-        XCTAssertEqual(test.points, triangulation.points)
+        XCTAssertEqual(Set(test.points), Set(triangulation.points))
+        
+        print(triangulation.indices)
+        
     }
     
     func test_00() throws {

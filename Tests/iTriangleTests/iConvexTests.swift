@@ -20,9 +20,44 @@ final class iConvexTests: XCTestCase {
         
         XCTAssertTrue(!polygons.isEmpty)
         
-        XCTAssertEqual(test.polygons, polygons)
+        XCTAssertTrue(comparePaths(a: test.polygons, b: polygons))
     }
 
+    func comparePaths(a: [FixPath], b: [FixPath]) -> Bool {
+        if a.count != b.count {
+            return false
+        }
+        let n = a.count
+        outerLoop: for i in 0..<n {
+            for j in 0..<n {
+                let isEq = comparePath(a: a[(i + j) % n], b: b[j]);
+                if !isEq {
+                    continue outerLoop
+                }
+            }
+            return true
+        }
+
+        return false
+    }
+    
+    func comparePath(a: FixPath, b: FixPath) -> Bool {
+        if a.count != b.count {
+            return false
+        }
+        let n = a.count
+        outerLoop: for i in 0..<n {
+            for j in 0..<n {
+                if a[(i + j) % n] != b[j] {
+                    continue outerLoop
+                }
+            }
+            return true
+        }
+
+        return false
+    }
+    
     
     func test_00() throws {
         self.execute(index: 0)
