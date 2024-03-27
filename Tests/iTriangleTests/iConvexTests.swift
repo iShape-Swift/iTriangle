@@ -17,7 +17,7 @@ final class iConvexTests: XCTestCase {
         let test = TriangulationTestBank.load(index: index)
         
         let polygons = test.shape.decomposeToConvexPolygons(validateRule: .evenOdd)
-        
+
         XCTAssertTrue(!polygons.isEmpty)
         
         XCTAssertTrue(comparePaths(a: test.polygons, b: polygons))

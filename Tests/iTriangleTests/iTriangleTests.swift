@@ -13,9 +13,8 @@ final class iTriangleTests: XCTestCase {
         XCTAssertTrue(!triangulation.indices.isEmpty)
         
         XCTAssertEqual(test.indices, triangulation.indices)
-        XCTAssertEqual(Set(test.points), Set(triangulation.points))
         
-        print(triangulation.indices)
+        XCTAssertEqual(Set(test.points), Set(triangulation.points))
         
     }
     
