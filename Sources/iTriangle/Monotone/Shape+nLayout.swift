@@ -1,5 +1,5 @@
 //
-//  FixShape+nLayout.swift
+//  Shape+nLayout.swift
 //  
 //
 //  Created by Nail Sharipov on 01.06.2023.
@@ -55,12 +55,12 @@ struct NodeLayout {
     }
 }
 
-extension FixShape {
+extension Shape {
     
     @inlinable
     var nLayout: NodeLayout {
         var n = 0
-        for path in paths {
+        for path in self {
             n += path.count
         }
         
@@ -68,9 +68,9 @@ extension FixShape {
         var nodes = [MSpecialNode]()
         
         var s = 0
-        for j in 0..<paths.count {
+        for j in 0..<self.count {
             
-            let path = paths[j]
+            let path = self[j]
             
             var i0 = path.count - 2
 

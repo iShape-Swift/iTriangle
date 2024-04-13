@@ -9,7 +9,7 @@ import iFixFloat
 
 public struct Triangulation {
     
-    public let points: [FixVec]
+    public let points: [Point]
     public let indices: [Int]
     
 }

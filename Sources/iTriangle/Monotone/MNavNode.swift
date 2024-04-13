@@ -97,12 +97,12 @@ extension Array where Element == MNavNode {
     }
     
     @inlinable
-    func isIntersectNextReverse(p0: FixVec, p1: FixVec, start: Int) -> Bool {
+    func isIntersectNextReverse(p0: Point, p1: Point, start: Int) -> Bool {
         var n = self[start]
         let stop = p0.x
-        let v = p1 - p0
+        let v = p1.subtract(p0)
         while n.vert.point.x <= stop {
-            let s = v.crossProduct(n.vert.point - p0)
+            let s = v.crossProduct(n.vert.point.subtract(p0))
             if s >= 0 {
                 return true
             }
@@ -113,12 +113,12 @@ extension Array where Element == MNavNode {
     }
 
     @inlinable
-    func isIntersectPrevReverse(p0: FixVec, p1: FixVec, start: Int) -> Bool {
+    func isIntersectPrevReverse(p0: Point, p1: Point, start: Int) -> Bool {
         var n = self[start]
         let stop = p0.x
-        let v = p1 - p0
+        let v = p1.subtract(p0)
         while n.vert.point.x > stop {
-            let s = v.crossProduct(n.vert.point - p0)
+            let s = v.crossProduct(n.vert.point.subtract(p0))
             if s >= 0 {
                 return true
             }
@@ -129,7 +129,7 @@ extension Array where Element == MNavNode {
     }
     
     @inlinable
-    func isIntersect(p0: FixVec, p1: FixVec, next: Int, prev: Int) -> Bool {
+    func isIntersect(p0: Point, p1: Point, next: Int, prev: Int) -> Bool {
         let isNext = isIntersectNextReverse(p0: p0, p1: p1, start: next)
         let isPrev = isIntersectPrevReverse(p0: p0, p1: p1, start: prev)
         
@@ -172,7 +172,7 @@ extension Array where Element == MNavNode {
         var next = self[start]
         var p0 = next.vert.point
         
-        var unsafeArea: FixFloat = 0
+        var unsafeArea: Int64 = 0
 
         repeat {
             next = self[next.next]

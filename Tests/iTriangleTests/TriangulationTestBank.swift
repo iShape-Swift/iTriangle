@@ -5,28 +5,16 @@ import simd
 @testable import iTriangle
 
 struct TriangulationTest: Decodable {
-    let shape: FixShape
-    let points: FixPath
+    let shape: Shape
+    let points: Path
     let indices: [Int]
-    let polygons: [FixPath]
+    let polygons: [Path]
 
     enum CodingKeys: String, CodingKey {
         case shape
         case points
         case indices
         case polygons
-    }
-}
-
-extension FixShape: Decodable {
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let paths = try container.decode([FixPath].self, forKey: .paths)
-        self.init(paths: paths)
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case paths
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  FixShape+mLayout.swift
+//  Shape+mLayout.swift
 //  
 //
 //  Created by Nail Sharipov on 02.06.2023.
@@ -24,7 +24,7 @@ struct MLayout {
     let status: MLayoutStatus
 }
 
-extension FixShape {
+extension Shape {
 
     var mLayout: MLayout {
         let nLayout = self.nLayout
@@ -95,7 +95,7 @@ extension FixShape {
                     
                     let sp = nav.vert.point
                     
-                    let isNext = a.x == b.x ? sp.fixSqrDistance(a) < sp.fixSqrDistance(b) : a.x > b.x
+                    let isNext = a.x == b.x ? sp.sqrDistance(a) < sp.sqrDistance(b) : a.x > b.x
                     
                     if isNext {
                         let nv = mPoly.next
@@ -266,7 +266,7 @@ extension FixShape {
             // middle: m, a1, b1
             // bottom: m, b1, b0
 
-            let minX = min(va1.point.x, vb1.point.x)
+            let minX = Swift.min(va1.point.x, vb1.point.x)
             
             var i = startNode
             
@@ -293,7 +293,7 @@ extension FixShape {
             }
         }
         
-        let compare = va1.point.x == vb1.point.x ? m.fixSqrDistance(va1.point) < m.fixSqrDistance(vb1.point) : va1.point.x < vb1.point.x
+        let compare = va1.point.x == vb1.point.x ? m.sqrDistance(va1.point) < m.sqrDistance(vb1.point) : va1.point.x < vb1.point.x
         
         if compare {
             return MSolution(type: .next, a: merge.index, b: next.next, nodeIndex: .empty)
@@ -302,7 +302,7 @@ extension FixShape {
         }
     }
     
-    private static func isContain(mPoly: MPoly, point: FixVec, navs: [MNavNode]) -> Bool {
+    private static func isContain(mPoly: MPoly, point: Point, navs: [MNavNode]) -> Bool {
         let a0 = navs[mPoly.next]
         let a1 = navs[a0.next]
         
@@ -312,9 +312,9 @@ extension FixShape {
         return isContain(point: point, a0: a0.vert.point, a1: a1.vert.point, b0: b0.vert.point, b1: b1.vert.point)
     }
     
-    private static func isContain(point: FixVec, a0: FixVec, a1: FixVec, b0: FixVec, b1: FixVec) -> Bool {
-        let sa = (a1 - a0).crossProduct(point - a0)
-        let sb = (b1 - b0).crossProduct(point - b0)
+    private static func isContain(point: Point, a0: Point, a1: Point, b0: Point, b1: Point) -> Bool {
+        let sa = a1.subtract(a0).crossProduct(point.subtract(a0))
+        let sb = b1.subtract(b0).crossProduct(point.subtract(b0))
         
         return sa <= 0 && sb >= 0
     }

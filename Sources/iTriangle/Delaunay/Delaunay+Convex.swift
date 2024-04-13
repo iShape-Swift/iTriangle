@@ -14,10 +14,10 @@ private struct Node {
     let index: Int
     var prev: Int
 
-    let point: FixVec
+    let point: Point
  
     @inlinable
-    init(next: Int, index: Int, prev: Int, point: FixVec) {
+    init(next: Int, index: Int, prev: Int, point: Point) {
         self.next = next
         self.index = index
         self.prev = prev
@@ -37,9 +37,9 @@ private struct ConvexPolygonBuilder {
     private var nodes: [Node]
     fileprivate var edges: [Edge]
     
-    func makePath() -> FixPath {
+    func makePath() -> Path {
         let count = nodes.count
-        var path = [FixVec](repeating: .zero, count: count)
+        var path = [Point](repeating: .zero, count: count)
 
         var n = self.nodes[count - 1]
         for i in 0..<count {
@@ -67,8 +67,8 @@ private struct ConvexPolygonBuilder {
         let va0 = self.nodes[node_a1.prev].point
         let va1 = node_a1.point
         
-        let aa = va1 - va0
-        let ap = v.point - va1
+        let aa = va1.subtract(va0)
+        let ap = v.point.subtract(va1)
         
         let apa = aa.crossProduct(ap)
         if apa > 0 {
@@ -81,8 +81,8 @@ private struct ConvexPolygonBuilder {
         let vb0 = self.nodes[node_b1.next].point
         let vb1 = node_b1.point
         
-        let bb = vb0 - vb1
-        let bp = vb1 - v.point
+        let bb = vb0.subtract(vb1)
+        let bp = vb1.subtract(v.point)
         
         let bpb = bp.crossProduct(bb)
         if bpb > 0 {
@@ -149,8 +149,8 @@ private struct ConvexPolygonBuilder {
 
 extension Delaunay {
 
-    public func convexPolygons() -> [FixPath] {
-        var result = [FixPath]()
+    public func convexPolygons() -> [Path] {
+        var result = [Path]()
         let n = self.triangles.count
         
         var visited = [Bool](repeating: false, count: n)

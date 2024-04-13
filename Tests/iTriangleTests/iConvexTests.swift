@@ -10,6 +10,26 @@ import iShape
 import iFixFloat
 @testable import iTriangle
 
+private extension Array where Element == Path {
+    
+    func sortByOrder() -> Self {
+        self.sorted { (path1, path2) -> Bool in
+            if path1.count != path2.count {
+                return path1.count < path2.count
+            } else {
+                for (point1, point2) in zip(path1, path2) {
+                    if point1.x != point2.x {
+                        return point1.x < point2.x
+                    } else if point1.y != point2.y {
+                        return point1.y < point2.y
+                    }
+                }
+                return false
+            }
+        }
+    }
+}
+
 
 final class iConvexTests: XCTestCase {
 
@@ -23,25 +43,25 @@ final class iConvexTests: XCTestCase {
         XCTAssertTrue(comparePaths(a: test.polygons, b: polygons))
     }
 
-    func comparePaths(a: [FixPath], b: [FixPath]) -> Bool {
+    func comparePaths(a: [Path], b: [Path]) -> Bool {
         if a.count != b.count {
             return false
         }
-        let n = a.count
-        outerLoop: for i in 0..<n {
-            for j in 0..<n {
-                let isEq = comparePath(a: a[(i + j) % n], b: b[j]);
-                if !isEq {
-                    continue outerLoop
-                }
+        
+        let pathA = a.sortByOrder()
+        let pathB = b.sortByOrder()
+        
+
+        for i in 0..<pathA.count {
+            if !self.comparePath(a: pathA[i], b: pathB[i]) {
+                return false
             }
-            return true
         }
 
-        return false
+        return true
     }
     
-    func comparePath(a: FixPath, b: FixPath) -> Bool {
+    func comparePath(a: Path, b: Path) -> Bool {
         if a.count != b.count {
             return false
         }

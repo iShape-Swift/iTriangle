@@ -3,6 +3,29 @@ import iShape
 import iFixFloat
 @testable import iTriangle
 
+private extension Array where Element == [Int] {
+    
+    func sortByOrder() -> Self {
+        self.sorted { (path1, path2) -> Bool in
+            if path1.count != path2.count {
+                return path1.count < path2.count
+            } else {
+                for i in 0..<path1.count {
+                    let a = path1[i]
+                    let b = path2[i]
+                    if a == b {
+                        continue
+                    } else {
+                        return a < b
+                    }
+                }
+                return false
+            }
+        }
+    }
+}
+
+
 final class iTriangleTests: XCTestCase {
 
     private func execute(index: Int) {
@@ -12,11 +35,40 @@ final class iTriangleTests: XCTestCase {
         
         XCTAssertTrue(!triangulation.indices.isEmpty)
         
-        XCTAssertEqual(test.indices, triangulation.indices)
+        XCTAssertTrue(compareIndices(test.indices, triangulation.indices))
         
         XCTAssertEqual(Set(test.points), Set(triangulation.points))
         
     }
+    
+    func compareIndices(_ a: [Int], _ b: [Int]) -> Bool {
+        if a.count != b.count {
+            return false
+        }
+
+        let trianglesA = toNormalizedTriangles(indices: a).sortByOrder()
+        let trianglesB = toNormalizedTriangles(indices: b).sortByOrder()
+
+        return trianglesA == trianglesB
+    }
+
+    func toNormalizedTriangles(indices: [Int]) -> [[Int]] {
+        return stride(from: 0, to: indices.count, by: 3).compactMap { i -> [Int]? in
+            guard i + 2 < indices.count else { return nil }
+            return normalizeTriangle(triangle: [indices[i], indices[i+1], indices[i+2]])
+        }
+    }
+
+    func normalizeTriangle(triangle: [Int]) -> [Int] {
+        let rotations = [
+            triangle,
+            [triangle[1], triangle[2], triangle[0]],
+            [triangle[2], triangle[0], triangle[1]]
+        ]
+
+        return rotations.min(by: { $0.lexicographicallyPrecedes($1) })!
+    }
+
     
     func test_00() throws {
         self.execute(index: 0)

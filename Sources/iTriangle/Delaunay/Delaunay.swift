@@ -91,7 +91,7 @@ public struct Delaunay {
             }
         }
 
-        var points = [FixVec](repeating: .zero, count: self.vertCount)
+        var points = [Point](repeating: .zero, count: self.vertCount)
         
         points.withUnsafeMutableBufferPointer { pointsPtr in
             for triangle in triangles {
@@ -390,7 +390,7 @@ public struct Delaunay {
     // if p0 is inside circumscribe circle of p1, p2, p3 return false
     // if p0 is inside circumscribe A + B > 180
     // return true if triangle satisfied condition and do not need flip triangles
-    static func condition(p0: FixVec, p1: FixVec, p2: FixVec, p3: FixVec) -> Bool {
+    static func condition(p0: Point, p1: Point, p2: Point, p3: Point) -> Bool {
         // x, y of all coordinates must be in range of Int32
         // p1, p2, p3 points of current triangle
         // p0 is a test point
@@ -398,11 +398,11 @@ public struct Delaunay {
         // alpha (A) is an angle of p1, p0, p3
         // beta (B) is an angle of p1, p2, p3
         
-        let v10 = p1 - p0
-        let v30 = p3 - p0
+        let v10 = p1.subtract(p0)
+        let v30 = p3.subtract(p0)
         
-        let v12 = p1 - p2
-        let v32 = p3 - p2
+        let v12 = p1.subtract(p2)
+        let v32 = p3.subtract(p2)
         
         let cosA = v10.dotProduct(v30)
         let cosB = v12.dotProduct(v32)
@@ -452,18 +452,18 @@ public struct Delaunay {
         case other_fail
     }
     
-    static func condition_debug(p0: FixVec, p1: FixVec, p2: FixVec, p3: FixVec) -> DelaunayResult {
+    static func condition_debug(p0: Point, p1: Point, p2: Point, p3: Point) -> DelaunayResult {
         // p1, p2, p3 points of current triangle
         // p0 is a test point
         // p1 and p3 common points of triangle p1, p2, p3 and p1, p0, p2
         // alpha (A) is an angle of p1, p0, p3
         // beta (B) is an angle of p1, p2, p3
         
-        let v10 = p1 - p0
-        let v30 = p3 - p0
+        let v10 = p1.subtract(p0)
+        let v30 = p3.subtract(p0)
         
-        let v12 = p1 - p2
-        let v32 = p3 - p2
+        let v12 = p1.subtract(p2)
+        let v32 = p3.subtract(p2)
         
         let cosA = v10.dotProduct(v30)
         let cosB = v12.dotProduct(v32)

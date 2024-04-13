@@ -1,5 +1,5 @@
 //
-//  FixShape+Triangulate.swift
+//  Shape+Triangulate.swift
 //
 //
 //  Created by Nail Sharipov on 10.07.2023.
@@ -9,7 +9,7 @@ import iFixFloat
 import iShape
 import iOverlay
 
-public extension FixShape {
+public extension Shape {
     
     /// Triangulates the shape.
     ///
@@ -33,13 +33,13 @@ public extension FixShape {
         }
         
         let shapes = self.simplify(fillRule: fillRule, minArea: minArea)
-        
-        let results = shapes.delaunay()
 
-        var points = [FixVec]()
+        let delaunayList = shapes.delaunay()
+
+        var points = [Point]()
         var indices = [Int]()
 
-        for delaunay in results {
+        for delaunay in delaunayList {
             let triangulation = delaunay.triangulation(shifted: points.count)
             indices.append(contentsOf: triangulation.indices)
             points.append(contentsOf: triangulation.points)
@@ -60,7 +60,7 @@ public extension FixShape {
     ///   - validateRule: An optional `FillRule` to validate and fix the shape. Defaults to `.nonZero`.
     ///   - minArea: The minimum area to consider for a shape. Defaults to `0`.
     /// - Returns: An array of `ConvexPath` representing the decomposed convex polygons.
-    func decomposeToConvexPolygons(validateRule: FillRule? = .nonZero, minArea: Int64 = 0) -> [FixPath] {
+    func decomposeToConvexPolygons(validateRule: FillRule? = .nonZero, minArea: Int64 = 0) -> [Path] {
         guard let fillRule = validateRule else {
             if let delaunay = self.delaunay() {
                 return delaunay.convexPolygons()
@@ -72,9 +72,9 @@ public extension FixShape {
         let shapes = self.simplify(fillRule: fillRule, minArea: minArea)
         
         if shapes.count == 1 && shapes[0].isConvexPolygon {
-            return shapes[0].paths
+            return shapes[0]
         } else {
-            var polygons = [FixPath]()
+            var polygons = [Path]()
             for shape in shapes {
                 if let delaunay = shape.delaunay() {
                     let subPolygons = delaunay.convexPolygons()
@@ -86,4 +86,19 @@ public extension FixShape {
         }
     }
 
+}
+
+public extension Shapes {
+    
+    func delaunay() -> [Delaunay] {
+        var result = [Delaunay]()
+        result.reserveCapacity(self.count)
+        for shape in self {
+            if let delaunay = shape.delaunay() {
+                result.append(delaunay)
+            }
+        }
+        
+        return result
+    }
 }

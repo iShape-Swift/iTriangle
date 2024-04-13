@@ -25,11 +25,11 @@ public struct DVertex {
     public static let empty = DVertex(index: .empty, point: .zero, type: .origin)
     
     public let index: Int
-    public let point: FixVec
+    public let point: Point
     public let type: DVType
 
     @inlinable
-    public init(index: Int, point: FixVec, type: DVType) {
+    public init(index: Int, point: Point, type: DVType) {
         self.index = index
         self.point = point
         self.type = type

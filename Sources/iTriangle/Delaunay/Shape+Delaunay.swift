@@ -1,5 +1,5 @@
 //
-//  FixShape+Delaunay.swift
+//  Shape+Delaunay.swift
 //  
 //
 //  Created by Nail Sharipov on 08.06.2023.
@@ -8,7 +8,7 @@
 import iFixFloat
 import iShape
 
-public extension FixShape {
+public extension Shape {
     
     private struct Edge {
         let a: Int            // vertex index
@@ -99,8 +99,8 @@ public extension FixShape {
             return nil
         }
             
-        let holesCount = self.paths.count - 1
-        let vertCount = self.paths.reduce(0, { $0 + $1.count })
+        let holesCount = self.count - 1
+        let vertCount = self.reduce(0, { $0 + $1.count })
         let totalCount = vertCount + holesCount * 2
         
         var triangleStack = TriangleStack(count: totalCount)
