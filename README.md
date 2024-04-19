@@ -98,12 +98,11 @@ let package = Package(
 ```
 Or add it directly through .xcodeproj
 
+![Instruction Page 1](Readme/instruction_1.png)
 <p align="center">
 <img src="https://github.com/iShape-Swift/iTriangle/blob/main/Reeadme/instruction_1.png" width="600"/>
 </p>
 
 In Searchbar add https://github.com/iShape-Swift/iTriangle
 
-<p align="center">
-<img src="https://github.com/iShape-Swift/iTriangle/blob/main/Reeadme/instruction_2.png" width="600"/>
-</p>
+![Instruction Page 2](Readme/instruction_2.png)
