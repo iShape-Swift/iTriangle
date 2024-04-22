@@ -51,5 +51,8 @@ final class ReadmeTests: XCTestCase {
         XCTAssertTrue(!triangulation.indices.isEmpty)
 
         print(triangulation)
+        
+        let polygons = shape.decomposeToConvexPolygons(validateRule: .nonZero)
+        print(polygons)
     }
 }
