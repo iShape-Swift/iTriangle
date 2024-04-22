@@ -36,6 +36,7 @@ After that, represent your polygon as an array of vertices. Here's an example of
 
 ```swift
 let shape = [
+     // body
     [
         CGPoint(x:   0, y:  20),     // 0
         CGPoint(x:   8, y:  10),     // 1
@@ -56,6 +57,7 @@ let shape = [
         CGPoint(x:  -7, y:   6),     // 16
         CGPoint(x: -10, y:   8)      // 17
     ],
+    // hole
     [
         CGPoint(x:   2, y:   0),    // 18
         CGPoint(x:  -2, y:  -2),    // 19
@@ -86,7 +88,7 @@ let package = Package(
     name: "[your name]",
     products: [
         dependencies: [
-            .package(url: "https://github.com/iShape-Swift/iTriangle", from: "1.10.0")
+            .package(url: "https://github.com/iShape-Swift/iTriangle", from: "1.11.0")
         ],
         targets: [
             .target(
