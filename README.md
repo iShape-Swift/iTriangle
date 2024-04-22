@@ -24,8 +24,6 @@ A fast and efficient library for Delaunay triangulation and converting complex p
 
 Add imports:
 ```swift
-import iShape
-import iFixFloat
 import iTriangle
 ```
 
