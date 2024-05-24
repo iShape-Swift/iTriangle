@@ -249,11 +249,10 @@ public struct Delaunay {
                         }
                     }
                 }
+                
                 origin.removeAll()
                 
-                let temp = origin
-                origin = buffer
-                buffer = temp
+                Swift.swap(&origin, &buffer)
             }
             
             origin.deallocate()
@@ -480,23 +479,23 @@ public struct Delaunay {
             return .a_and_b_less_90
         }
         
-        let sinA = abs(v10.crossProduct(v30)) // A <= 180
-        let sinB = abs(v12.crossProduct(v32)) // B <= 180
+        let sinA = UInt64(abs(v10.crossProduct(v30))) // A <= 180
+        let sinB = UInt64(abs(v12.crossProduct(v32))) // B <= 180
         
         // cosA and cosB has different sign
         
         let isPositive_or_zero: Bool
         if cosA < 0 {
             // cosB >= 0
-            let sinAcosB = UInt128.multiply(UInt64(sinA), UInt64(cosB))          // positive
-            let cosAsinB = UInt128.multiply(UInt64(abs(cosA)), UInt64(sinB))     // negative
+            let sinAcosB = UInt128.multiply(sinA, UInt64(cosB))          // positive
+            let cosAsinB = UInt128.multiply(UInt64(abs(cosA)), sinB)     // negative
 
             isPositive_or_zero = sinAcosB >= cosAsinB
         } else {
             // cosA >= 0
             // cosB < 0
-            let sinAcosB = UInt128.multiply(UInt64(sinA), UInt64(abs(cosB)))    // negative
-            let cosAsinB = UInt128.multiply(UInt64(cosA), UInt64(sinB))         // positive
+            let sinAcosB = UInt128.multiply(sinA, UInt64(abs(cosB)))    // negative
+            let cosAsinB = UInt128.multiply(UInt64(cosA), sinB)         // positive
             
             isPositive_or_zero = cosAsinB >= sinAcosB
         }
