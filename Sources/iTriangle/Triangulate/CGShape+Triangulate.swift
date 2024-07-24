@@ -26,7 +26,11 @@ public extension CGShape {
     ///   - minArea: The minimum area to consider for a shape. Defaults to `0`.
     /// - Returns: A `CGTriangulation` instance representing the triangulated shape.
     func triangulate(validateRule: FillRule? = .nonZero, minArea: CGFloat = 0) -> CGTriangulation {
-        let adapter = PointAdapter(rect: CGRect(shape: self))
+        guard let rect = CGRect(shape: self) else {
+            return CGTriangulation(points: [], indices: [])
+        }
+        
+        let adapter = PointAdapter(rect: rect)
         let shape = self.toShape(adapter: adapter)
         let sqrScale = adapter.dirScale * adapter.dirScale
         let iArea = Int64(sqrScale * minArea)
@@ -51,7 +55,11 @@ public extension CGShape {
     ///   - minArea: The minimum area to consider for a shape. Defaults to `0`.
     /// - Returns: An array of path representing the decomposed convex polygons.
     func decomposeToConvexPolygons(validateRule: FillRule? = .nonZero, minArea: CGFloat = 0) -> [[CGPoint]] {
-        let adapter = PointAdapter(rect: CGRect(shape: self))
+        guard let rect = CGRect(shape: self) else {
+            return []
+        }
+        
+        let adapter = PointAdapter(rect: rect)
         let shape = self.toShape(adapter: adapter)
         let sqrScale = adapter.dirScale * adapter.dirScale
         let iArea = Int64(sqrScale * minArea)
