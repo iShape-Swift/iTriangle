@@ -4,7 +4,7 @@ import Foundation
 import simd
 @testable import iTriangle
 
-struct TriangulationTest: Decodable {
+struct TriangulationTest: Codable {
     let shape: Shape
     let points: Path
     let indices: [Int]
@@ -38,5 +38,20 @@ struct TriangulationTestBank {
         }
         
         fatalError("Error loading test file: \(index)")
+    }
+}
+
+extension TriangulationTest {
+    func printTest() {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        do {
+            let data = try encoder.encode(self)
+            if let json = String(data: data, encoding: .utf8) {
+                print(json)
+            }
+        } catch {
+            print("Error converting to JSON: \(error)")
+        }
     }
 }

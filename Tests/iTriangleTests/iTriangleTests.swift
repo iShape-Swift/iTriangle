@@ -33,12 +33,28 @@ final class iTriangleTests: XCTestCase {
         
         let triangulation = test.shape.triangulate(validateRule: .evenOdd)
         
+//        self.printTest(index: index)
+
         XCTAssertTrue(!triangulation.indices.isEmpty)
         
         XCTAssertTrue(compareIndices(test.indices, triangulation.indices))
         
         XCTAssertEqual(Set(test.points), Set(triangulation.points))
         
+    }
+    
+    func printTest(index: Int) {
+        let test = TriangulationTestBank.load(index: index)
+        
+        let triangulation = test.shape.triangulate(validateRule: .evenOdd)
+        let polygons = test.shape.decomposeToConvexPolygons(validateRule: .evenOdd)
+        
+        TriangulationTest(
+            shape: test.shape,
+            points: triangulation.points,
+            indices: triangulation.indices,
+            polygons: polygons
+        ).printTest()
     }
     
     func compareIndices(_ a: [Int], _ b: [Int]) -> Bool {
