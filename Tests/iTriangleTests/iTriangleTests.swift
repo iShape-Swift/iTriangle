@@ -369,4 +369,8 @@ final class iTriangleTests: XCTestCase {
     func test_70() throws {
         self.execute(index: 70)
     }
+    
+    func test_71() throws {
+        self.execute(index: 71)
+    }
 }
