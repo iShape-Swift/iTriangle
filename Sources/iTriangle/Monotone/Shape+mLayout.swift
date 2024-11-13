@@ -312,10 +312,10 @@ extension Shape {
         return isContain(point: point, a0: a0.vert.point, a1: a1.vert.point, b0: b0.vert.point, b1: b1.vert.point)
     }
     
-    private static func isContain(point: Point, a0: Point, a1: Point, b0: Point, b1: Point) -> Bool {
-        let sa = a1.subtract(a0).crossProduct(point.subtract(a0))
-        let sb = b1.subtract(b0).crossProduct(point.subtract(b0))
+    private static func isContain(point p: Point, a0: Point, a1: Point, b0: Point, b1: Point) -> Bool {
+        let is_first = Triangle.isContain(p: p, p0: a0, p1: a1, p2: b0)
+        let is_second = Triangle.isContain(p: p, p0: b0, p1: b1, p2: a1)
         
-        return sa <= 0 && sb >= 0
+        return is_first || is_second
     }
 }
