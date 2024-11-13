@@ -33,7 +33,7 @@ final class iTriangleTests: XCTestCase {
         
         let triangulation = test.shape.triangulate(validateRule: .evenOdd)
         
-//        self.printTest(index: index)
+        self.printTest(index: index)
 
         XCTAssertTrue(!triangulation.indices.isEmpty)
         
@@ -372,5 +372,9 @@ final class iTriangleTests: XCTestCase {
     
     func test_71() throws {
         self.execute(index: 71)
+    }
+    
+    func test_72() throws {
+        self.execute(index: 72)
     }
 }

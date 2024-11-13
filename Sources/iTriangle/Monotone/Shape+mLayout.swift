@@ -313,8 +313,8 @@ extension Shape {
     }
     
     private static func isContain(point p: Point, a0: Point, a1: Point, b0: Point, b1: Point) -> Bool {
-        let is_first = Triangle.isContain(p: p, p0: a0, p1: a1, p2: b0)
-        let is_second = Triangle.isContain(p: p, p0: b0, p1: b1, p2: a1)
+        let is_first = Triangle.isContain(p: p, p0: a0, p1: a1, p2: b0) && Triangle.unsafeAreaTwo(p0: a0, p1: a1, p2: b0) != 0
+        let is_second = Triangle.isContain(p: p, p0: b0, p1: b1, p2: a1) && Triangle.unsafeAreaTwo(p0: b0, p1: b1, p2: a1) != 0
         
         return is_first || is_second
     }
