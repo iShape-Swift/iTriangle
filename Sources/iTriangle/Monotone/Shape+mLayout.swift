@@ -281,9 +281,10 @@ extension Shape {
                     // if it end it can be unreachable (same point for different vertices!)
                     let isBadEnd = v.point == va1.point && v.index != va1.index || v.point == vb1.point && v.index != vb1.index
                     if !isBadEnd {
-                        let isContain = Triangle.isContain(p: v.point, p0: m, p1: a0, p2: va1.point)
-                        || Triangle.isContain(p: v.point, p0: m, p1: va1.point, p2: vb1.point)
-                        || Triangle.isContain(p: v.point, p0: m, p1: vb1.point, p2: b0)
+                        let m_a0_a1 = Triangle.isContain_eclude_borders(p: v.point, p0: m, p1: a0, p2: va1.point)
+                        let m_a1_b1 = Triangle.isContain(p: v.point, p0: m, p1: va1.point, p2: vb1.point)
+                        let m_b1_b0 = Triangle.isContain_eclude_borders(p: v.point, p0: m, p1: vb1.point, p2: b0)
+                        let isContain = m_a0_a1 || m_a1_b1 || m_b1_b0
                         if isContain {
                             return MSolution(type: .direct, a: merge.index, b: nav.index, nodeIndex: i)
                         }
